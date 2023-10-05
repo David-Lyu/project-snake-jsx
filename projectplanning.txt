@@ -1,8 +1,28 @@
 Creating the game snake:
 
-Parts
+Pages:
 - Intro 
 - Sign in
 - Game
 
+Intro:
+- Gives two options:
+	1) Start Game
+	2) Sign in
+- Shows highscore top 5 if available
 
+Sign in:
+- U/n
+- Pass
+
+- Create
+- Back button ( goes to intro)
+- Start Game
+
+Game:
+- Components
+	- Header
+	- Gameboard
+		- Board
+		- Snake
+		- Food
