@@ -1,0 +1,8 @@
+Creating the game snake:
+
+Parts
+- Intro 
+- Sign in
+- Game
+
+
