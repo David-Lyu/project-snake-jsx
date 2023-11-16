@@ -1,7 +1,8 @@
 Creating the game snake:
 
+
 Pages:
-- Intro 
+- Intro
 - Sign in
 - Game
 
@@ -9,6 +10,8 @@ Intro:
 - Gives two options:
 	1) Start Game
 	2) Sign in
+		- check if signed in grab info put it in local storage (async)
+		- check not use local storage to store your highscore
 - Shows highscore top 5 if available
 
 Sign in:
@@ -26,3 +29,18 @@ Game:
 		- Board
 		- Snake
 		- Food
+		- dimension
+		- game over condition
+
+Backend:
+ - Go?
+		- User, pass
+		- Scores -> only 100 columns, and rewrite if it is not top 100
+			- Primary key
+			- Username
+
+Scope:
+	- postgresql
+		- maybe even sqllite?
+	-	game
+	- login Page
