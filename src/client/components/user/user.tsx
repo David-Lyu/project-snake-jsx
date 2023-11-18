@@ -1,8 +1,7 @@
-import { useState } from 'react';
-
 export default function User() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [userChoice, setUserChoice] = useState('login');
+  // const [userChoice, setUserChoice] = useState('login');
+  let userChoice = '';
+  userChoice = 'login';
 
   return (
     <>
