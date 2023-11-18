@@ -1,3 +1,6 @@
+//Store
+type Store = {};
+
 // Start Page
 type User = {
   id: number;

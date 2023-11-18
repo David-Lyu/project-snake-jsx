@@ -1,3 +1,3 @@
 export default function createAppState() {
-  return null;
+  return {} as Store;
 }
