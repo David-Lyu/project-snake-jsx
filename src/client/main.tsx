@@ -2,10 +2,14 @@ import React, { createContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter } from 'react-router-dom';
 
+//my components imports
 import App from './routes/App';
 import Snake from './routes/snake/snake';
 import HomePage from './routes/homepage/homepage';
 import createAppState from './store/store';
+
+//types
+import { Store } from './types/types';
 
 const router = createBrowserRouter([
   {

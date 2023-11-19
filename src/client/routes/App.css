@@ -1,0 +1,35 @@
+.container {
+  max-width: 1440px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: auto;
+}
+
+.container > .row {
+  /* flex: 1 1 100%; */
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.row.start-screen-items {
+  width: 50%;
+}
+
+.row.start-screen-items > * {
+  width: 100%;
+  /* flex: 1 1 100%; */
+  text-align: center;
+}
+
+.row.start-screen-items button {
+  width: 50%;
+  flex-basis: 50%;
+  flex-grow: 0;
+}
