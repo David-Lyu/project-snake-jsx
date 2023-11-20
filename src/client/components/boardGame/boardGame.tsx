@@ -1,5 +1,5 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { CanvasState, Snake } from '../../types/boardgame';
+import { useLayoutEffect, useRef, useState } from 'react';
+import { CanvasState, InitSnake } from '../../types/boardgame';
 
 export default function BoardGame() {
   const [canvasSize, setCanvasSize] = useState<number[]>([500, 500]);
@@ -8,11 +8,23 @@ export default function BoardGame() {
   const canvasState: CanvasState = {
     width: 0,
     height: 0,
-    grid: [10, 10]
+    grid: [10, 10],
+    hasStarted: false
   };
-  const snake: Snake = {
-    segSize: canvasState.height * 0.1
+  const snake: InitSnake = {
+    segSize: [
+      canvasState.width * (canvasState.grid[0] / 100),
+      canvasState.height * (canvasState.grid[1] / 100)
+    ],
+    snakeBody: {
+      next: null,
+      last: null,
+      coord: [canvasState.width / 2, canvasState.height / 2]
+    }
   };
+
+  snake.snakeBody.coord[0] -= snake.segSize[0];
+  snake.snakeBody.coord[1] -= snake.segSize[1];
 
   //useLayoutEffect seems to be the more correct than useState
   useLayoutEffect(() => {
@@ -33,6 +45,7 @@ export default function BoardGame() {
   );
 }
 
+/** HELPER FUNCTIONS **/
 function drawBoard(
   canvas: HTMLCanvasElement,
   canvasState: CanvasState,
@@ -40,42 +53,20 @@ function drawBoard(
 ) {
   ctx = canvas.getContext('2d');
   if (ctx) {
-    //create a snake object (maybe class)
-    // const startCoord = [canvas.width / 2 - 15, canvas.height / 2 - 15];
     ctx.fillStyle = 'rgb(165,165,165)';
-    // ctx.arcTo(0, 0, 0, 0, 5);
-    // ctx.fillRect();
   }
 }
-function drawSnake() {
-  window.addEventListener('keydown', (e: KeyboardEvent) => {
-    switch (e.key) {
-      case 'w':
-      case 'ArrowUp':
-        break;
-      case 'S':
-      case 'ArrowDown':
-        break;
-      case 'A':
-      case 'ArrowLeft':
-        break;
-      case 'D':
-      case 'ArrowRight':
-        break;
-      default:
-        null;
-    }
-  });
 
-  const snake = {
-    head: 0,
-    next: null,
-    last: null
-  };
+function drawSnake(canvasState: CanvasState) {
+  if (!canvasState.hasStarted) {
+    window.addEventListener('keydown', onKeyDown);
+  }
 }
 
 function loadGame(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {}
 
+/** NAMED EVENT FUNCTIONS **/
+//todo: Need to figure out a way to get window to resize
 function resize(canvasState: CanvasState) {
   const size = window.innerWidth;
   if (size >= 1024) {
@@ -87,5 +78,23 @@ function resize(canvasState: CanvasState) {
   } else {
     canvasState.height = 200;
     canvasState.width = 200;
+  }
+}
+function onKeyDown(e: KeyboardEvent) {
+  switch (e.key) {
+    case 'w':
+    case 'ArrowUp':
+      break;
+    case 'S':
+    case 'ArrowDown':
+      break;
+    case 'A':
+    case 'ArrowLeft':
+      break;
+    case 'D':
+    case 'ArrowRight':
+      break;
+    default:
+      null;
   }
 }

@@ -7,10 +7,12 @@ export type CanvasState = {
   width: number;
   height: number;
   grid: number[];
+  hasStarted: boolean;
 };
 
 export type InitSnake = {
-  segSize: number;
+  segSize: number[];
+  snakeBody: SnakeBody;
 };
 
 //linkedList
