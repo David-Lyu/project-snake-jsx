@@ -10,11 +10,6 @@ export type CanvasState = {
   hasStarted: boolean;
 };
 
-export type InitSnake = {
-  segSize: number[];
-  snakeBody: SnakeBody;
-};
-
 //linkedList
 export type SnakeBody = {
   head?: SnakeBody;
