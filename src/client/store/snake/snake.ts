@@ -28,4 +28,15 @@ export default class Snake {
       this.snakeBody = newSeg;
     }
   }
+
+  moveSnake(x_coord: number, y_coord: number) {
+    let tempCoord = this.snakeBody.coord;
+    let nextBody = this.snakeBody.next;
+    this.snakeBody.coord = [x_coord, y_coord];
+    while (nextBody) {
+      nextBody.coord = tempCoord;
+      nextBody = nextBody.next;
+      tempCoord = nextBody!.coord;
+    }
+  }
 }
