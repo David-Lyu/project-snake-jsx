@@ -58,4 +58,14 @@ export default class Snake {
     }
     return false;
   }
+
+  restart() {
+    this.snakeBody = {
+      next: null,
+      last: null,
+      coord: [0, 0]
+    };
+
+    this.snakeSegSize = [0, 0];
+  }
 }
