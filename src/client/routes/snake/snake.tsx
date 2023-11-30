@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import BoardGame from '../../components/boardGame/boardGame';
 
 export default function Snake() {
@@ -6,6 +7,7 @@ export default function Snake() {
       <div className="score"></div>
       {/* placeholder for boardgame component */}
       <BoardGame></BoardGame>
+      <Link to="/">Go Back</Link>
     </div>
   );
 }

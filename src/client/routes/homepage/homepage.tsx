@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function HomePage() {
   return (
     <div className="start-screen container">
@@ -5,7 +7,7 @@ export default function HomePage() {
         <h1>SNAKE</h1>
         <h6>Please choose the following options:</h6>
         <button disabled={true}>Login/Sign up</button>
-        <a href="/play">Play Game</a>
+        <Link to="/play">Play Game</Link>
         <div className="scoreboard" id="scoreboard-start-screen"></div>
       </div>
     </div>

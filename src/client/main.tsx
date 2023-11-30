@@ -22,8 +22,7 @@ const router = createBrowserRouter([
   }
 ]);
 
-// eslint-disable-next-line react-refresh/only-export-components
-const AppState = createContext({} as Store);
+export const AppState = createContext({} as Store);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

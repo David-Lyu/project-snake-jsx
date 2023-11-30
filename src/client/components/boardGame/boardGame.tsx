@@ -1,9 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { CanvasState } from '../../types/boardgame';
 import GameBoard from '../../store/boardGame/boardGame';
+import { AppState } from '../../main';
+import Snake from '../../store/snake/snake';
 
 export default function BoardGame() {
+  const { snake: snakeState, boardGame: boardGameState } = useContext(AppState);
+  console.log('hello');
+  snakeState.value = new Snake();
+
+  boardGameState.value = new GameBoard();
   const [canvasSize, setCanvasSize] = useState<number[]>([500, 500]);
   const boardGameRef: React.Ref<HTMLCanvasElement> = useRef(null);
   const ctx: CanvasRenderingContext2D | null = null;
