@@ -15,6 +15,10 @@ export default function BoardGame() {
   };
   let drawnBoard = null;
 
+  function animateSnake() {
+    drawSnake(canvasState);
+  }
+
   //useLayoutEffect seems to be the more correct than useState
   useLayoutEffect(() => {
     if (boardGameRef?.current) {
@@ -23,7 +27,7 @@ export default function BoardGame() {
       setCanvasSize([canvasState.width, canvasState.height]);
       drawnBoard = drawBoard(boardGameRef.current, canvasState, ctx);
 
-      // window.requestAnimationFrame();
+      window.requestAnimationFrame(animateSnake);
     }
   }, [boardGameRef]);
 
@@ -50,11 +54,7 @@ function drawBoard(
   return new GameBoard();
 }
 
-function drawSnake(canvasState: CanvasState) {
-  if (!canvasState.hasStarted) {
-    window.addEventListener('keydown', onKeyDown);
-  }
-}
+function drawSnake(canvasState: CanvasState) {}
 
 /** NAMED EVENT FUNCTIONS **/
 //todo: Need to figure out a way to get window to resize
