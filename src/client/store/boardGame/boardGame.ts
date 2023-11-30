@@ -1,4 +1,7 @@
+import { Signal, signal } from '@preact/signals';
 import Snake from '../snake/snake';
+
+export const boardGameState: Signal<BoardGame | null> = signal(null);
 
 export default class BoardGame {
   dimensions: number[] = [];

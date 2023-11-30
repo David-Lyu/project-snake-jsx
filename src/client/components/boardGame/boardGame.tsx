@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useLayoutEffect, useRef, useState } from 'react';
 import { CanvasState } from '../../types/boardgame';
+import GameBoard from '../../store/boardGame/boardGame';
 
 export default function BoardGame() {
   const [canvasSize, setCanvasSize] = useState<number[]>([500, 500]);
@@ -12,20 +13,7 @@ export default function BoardGame() {
     grid: [10, 10],
     hasStarted: false
   };
-  // const snake: InitSnake = {
-  //   segSize: [
-  //     canvasState.width * (canvasState.grid[0] / 100),
-  //     canvasState.height * (canvasState.grid[1] / 100)
-  //   ],
-  //   snakeBody: {
-  //     next: null,
-  //     last: null,
-  //     coord: [canvasState.width / 2, canvasState.height / 2]
-  //   }
-  // };
-
-  // snake.snakeBody.coord[0] -= snake.segSize[0];
-  // snake.snakeBody.coord[1] -= snake.segSize[1];
+  let drawnBoard = null;
 
   //useLayoutEffect seems to be the more correct than useState
   useLayoutEffect(() => {
@@ -33,7 +21,9 @@ export default function BoardGame() {
       resize(canvasState);
       //make this x,y coords
       setCanvasSize([canvasState.width, canvasState.height]);
-      drawBoard(boardGameRef.current, canvasState, ctx);
+      drawnBoard = drawBoard(boardGameRef.current, canvasState, ctx);
+
+      // window.requestAnimationFrame();
     }
   }, [boardGameRef]);
 
@@ -56,16 +46,15 @@ function drawBoard(
   if (ctx) {
     ctx.fillStyle = 'rgb(165,165,165)';
   }
+  drawSnake(canvasState);
+  return new GameBoard();
 }
 
 function drawSnake(canvasState: CanvasState) {
   if (!canvasState.hasStarted) {
     window.addEventListener('keydown', onKeyDown);
   }
-  // window.requestAnimationFrame();
 }
-
-function loadGame(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {}
 
 /** NAMED EVENT FUNCTIONS **/
 //todo: Need to figure out a way to get window to resize

@@ -1,4 +1,7 @@
+import { Signal, signal } from '@preact/signals';
 import { SnakeBody } from '../../types/boardgame';
+
+export const snakeState: Signal<Snake | null> = signal(null);
 
 export default class Snake {
   snakeBody: SnakeBody = {
