@@ -4,42 +4,52 @@ import { CanvasState } from '../../types/boardgame';
 import GameBoard from '../../store/boardGame/boardGame';
 import { AppState } from '../../main';
 import Snake from '../../store/snake/snake';
+import BoardGame from '../../store/boardGame/boardGame';
 
 export default function BoardGame() {
-  const { snake: snakeState, boardGame: boardGameState } = useContext(AppState);
   console.log('hello');
-  snakeState.value = new Snake();
-
-  boardGameState.value = new GameBoard();
+  const { snake: snakeState, boardGame: boardGameState } = useContext(AppState);
   const [canvasSize, setCanvasSize] = useState<number[]>([500, 500]);
   const boardGameRef: React.Ref<HTMLCanvasElement> = useRef(null);
-  const ctx: CanvasRenderingContext2D | null = null;
+  let ctx: CanvasRenderingContext2D | null = null;
   const canvasState: CanvasState = {
     width: 0,
     height: 0,
     grid: [10, 10],
     hasStarted: false
   };
-  let drawnBoard = null;
+  let cancelAnimationReturn = 0;
 
   function animateSnake() {
-    drawSnake(canvasState);
+    cancelAnimationReturn = window.requestAnimationFrame(animateSnake);
+    // console.log(cancelAnimationReturn);
+    drawSnake(canvasState, ctx!, snakeState.value!);
+  }
+  function resetGame(): undefined {
+    console.log(cancelAnimationReturn);
+    window.cancelAnimationFrame(cancelAnimationReturn);
   }
 
   //useLayoutEffect seems to be the more correct than useState
   useLayoutEffect(() => {
+    console.log('inside layout effect');
     if (boardGameRef?.current) {
       resize(canvasState);
       //make this x,y coords
       setCanvasSize([canvasState.width, canvasState.height]);
-      drawnBoard = drawBoard(boardGameRef.current, canvasState, ctx);
+      //need to change return value to ctx and pass in bordGameState
+      ctx = drawBoard(boardGameRef.current, canvasState, boardGameState.value);
+      snakeState.value = new Snake();
 
-      window.requestAnimationFrame(animateSnake);
+      animateSnake();
     }
   }, [boardGameRef]);
 
   return (
     <div>
+      <button className="reset-game" onClick={resetGame}>
+        Click to reset
+      </button>
       <canvas ref={boardGameRef} width={canvasSize[0]} height={canvasSize[1]}>
         No Game Available
       </canvas>
@@ -51,17 +61,31 @@ export default function BoardGame() {
 function drawBoard(
   canvas: HTMLCanvasElement,
   canvasState: CanvasState,
-  ctx: CanvasRenderingContext2D | null
+  boardGameState: BoardGame | null
 ) {
-  ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d');
   if (ctx) {
     ctx.fillStyle = 'rgb(165,165,165)';
+    ctx.fillRect(
+      canvasState.grid[0],
+      canvasState.grid[1],
+      canvasState.width,
+      canvasState.height
+    );
   }
-  drawSnake(canvasState);
-  return new GameBoard();
+  return ctx;
 }
 
-function drawSnake(canvasState: CanvasState) {}
+function drawSnake(
+  canvasState: CanvasState,
+  ctx: CanvasRenderingContext2D,
+  snakeState: Snake
+) {
+  ctx.beginPath();
+
+  // console.log('1');
+  // drawSnake(canvasState, ctx, snakeState);
+}
 
 /** NAMED EVENT FUNCTIONS **/
 //todo: Need to figure out a way to get window to resize
