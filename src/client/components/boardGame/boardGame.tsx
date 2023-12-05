@@ -21,11 +21,10 @@ export default function BoardGame() {
   };
 
   function animateSnake() {
-    // cancelAnimationReturn.current = window.requestAnimationFrame(animateSnake);
+    cancelAnimationReturn.current = window.requestAnimationFrame(animateSnake);
     drawSnake(canvasState, ctx.current!, snakeState.value!);
   }
   function resetGame() {
-    console.log(cancelAnimationReturn);
     window.cancelAnimationFrame(cancelAnimationReturn.current);
   }
 
@@ -42,11 +41,14 @@ export default function BoardGame() {
         canvasState,
         boardGameState.value
       );
-      snakeState.value = new Snake();
+      snakeState.value = new Snake(4, [
+        canvasState.width / 2,
+        canvasState.height / 2
+      ]);
 
       animateSnake();
       return () => {
-        // window.cancelAnimationFrame(cancelAnimationReturn.current);
+        window.cancelAnimationFrame(cancelAnimationReturn.current);
       };
     }
   }, [boardGameRef]);
@@ -88,7 +90,6 @@ function drawSnake(
   snakeState: Snake
 ) {
   let snakeBody: SnakeBody | null = snakeState.snakeBody;
-  console.log(snakeBody);
 
   switch (snakeState.direction) {
     case 'up':

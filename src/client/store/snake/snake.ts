@@ -23,7 +23,7 @@ export default class Snake {
     this.snakeBody.coord = startCoords;
     this.snakeSegSize = snakeDimensions;
     this.direction = direction;
-    this.velocity = this.snakeSegSize[0];
+    this.velocity = this.snakeSegSize[0] / 60;
 
     this.initSnake(snakeSize);
   }
@@ -48,14 +48,20 @@ export default class Snake {
   }
 
   moveSnake(x_coord: number, y_coord: number) {
-    let tempCoord = this.snakeBody.coord;
+    let prevCoord = this.snakeBody.coord;
+    let nextCoord = null;
     let nextBody = this.snakeBody.next;
     this.snakeBody.coord = [x_coord, y_coord];
-    //need to work on the logic
-    while (nextBody!.next) {
-      nextBody!.coord = tempCoord;
-      nextBody = nextBody!.next;
-      tempCoord = nextBody!.coord;
+    if (nextBody) {
+      nextCoord = nextBody.next;
+      //need to work on the logic
+      while (nextBody.next) {
+        nextCoord = nextBody.coord;
+        nextBody.coord = prevCoord;
+        nextBody = nextBody.next;
+        prevCoord = nextCoord;
+      }
+      nextBody.coord = prevCoord;
     }
   }
 
@@ -84,14 +90,12 @@ export default class Snake {
       snakeSize = 3;
     }
     while (snakeSize) {
-      console.log(tempSnake);
       tempSnake.next = {
         next: null,
         last: null,
         coord: [tempSnake.coord[0] + this.snakeSegSize[0], tempSnake.coord[1]]
       };
       tempSnake = tempSnake.next;
-      // console.log(tempSnake.coord[0]);
       snakeSize--;
     }
   }
