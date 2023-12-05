@@ -11,28 +11,21 @@ export default class Snake {
   };
 
   snakeSegSize = [10, 10];
+  direction: 'left' | 'right' | 'up' | 'down' = 'left';
+  velocity: number = 0;
 
   constructor(
     snakeSize: number = 3,
     startCoords: number[] = [0, 0],
-    snakeDimensions: number[] = [10, 10]
+    snakeDimensions: number[] = [10, 10],
+    direction: 'left' | 'right' | 'up' | 'down' = 'left'
   ) {
     this.snakeBody.coord = startCoords;
     this.snakeSegSize = snakeDimensions;
-    let tempSnake = this.snakeBody;
+    this.direction = direction;
+    this.velocity = this.snakeSegSize[0];
 
-    if (snakeSize > 10) {
-      snakeSize = 3;
-    }
-    while (snakeSize - 1) {
-      tempSnake.next = {
-        next: null,
-        last: null,
-        coord: [tempSnake.coord[0] + snakeDimensions[0], tempSnake.coord[1]]
-      };
-      tempSnake = tempSnake.next;
-      snakeSize--;
-    }
+    this.initSnake(snakeSize);
   }
 
   /**
@@ -58,9 +51,10 @@ export default class Snake {
     let tempCoord = this.snakeBody.coord;
     let nextBody = this.snakeBody.next;
     this.snakeBody.coord = [x_coord, y_coord];
-    while (nextBody) {
-      nextBody.coord = tempCoord;
-      nextBody = nextBody.next;
+    //need to work on the logic
+    while (nextBody!.next) {
+      nextBody!.coord = tempCoord;
+      nextBody = nextBody!.next;
       tempCoord = nextBody!.coord;
     }
   }
@@ -81,6 +75,25 @@ export default class Snake {
       nextBody = nextBody.next;
     }
     return false;
+  }
+
+  initSnake(snakeSize: number) {
+    let tempSnake = this.snakeBody;
+
+    if (snakeSize > 10) {
+      snakeSize = 3;
+    }
+    while (snakeSize) {
+      console.log(tempSnake);
+      tempSnake.next = {
+        next: null,
+        last: null,
+        coord: [tempSnake.coord[0] + this.snakeSegSize[0], tempSnake.coord[1]]
+      };
+      tempSnake = tempSnake.next;
+      // console.log(tempSnake.coord[0]);
+      snakeSize--;
+    }
   }
 
   restart() {

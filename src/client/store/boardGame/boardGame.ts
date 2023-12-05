@@ -11,10 +11,11 @@ export default class BoardGame {
   }
 
   createFood(snake: Snake) {
-    const x_coord = Math.round(Math.random()) * 10;
-    const y_coord = Math.round(Math.random()) * 10;
+    const x_coord = Math.round(Math.random()) * this.dimensions[0];
+    const y_coord = Math.round(Math.random()) * this.dimensions[1];
 
-    //might move to its own method
+    //might move to its own method or make it a while loop.
+    //if keeping recursion then need to cache coords
     if (
       snake.checkSnakeBodyCollision(x_coord, y_coord) ||
       (snake.snakeBody.coord[0] === x_coord &&

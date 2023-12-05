@@ -88,10 +88,35 @@ function drawSnake(
   snakeState: Snake
 ) {
   let snakeBody: SnakeBody | null = snakeState.snakeBody;
-  console.log(snakeBody.coord[0]);
+  console.log(snakeBody);
 
-  ctx.fillStyle = 'red';
-  ctx.fillRect(10, 10, 10, 10);
+  switch (snakeState.direction) {
+    case 'up':
+      snakeState.moveSnake(
+        snakeBody.coord[0],
+        snakeBody.coord[1] + snakeState.velocity
+      );
+      break;
+    case 'down':
+      snakeState.moveSnake(
+        snakeBody.coord[0],
+        snakeBody.coord[1] - snakeState.velocity
+      );
+      break;
+    case 'left':
+      snakeState.moveSnake(
+        snakeBody.coord[0] - snakeState.velocity,
+        snakeBody.coord[1]
+      );
+      break;
+    case 'right':
+      snakeState.moveSnake(
+        snakeBody.coord[0] + snakeState.velocity,
+        snakeBody.coord[1]
+      );
+      break;
+  }
+
   // snakeState.moveSnake(5, 4);
   while (snakeBody) {
     ctx.fillStyle = 'rgb(0,0,255)';
