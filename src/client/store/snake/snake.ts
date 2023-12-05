@@ -10,9 +10,30 @@ export default class Snake {
     coord: [0, 0]
   };
 
-  snakeSegSize = [0, 0];
+  snakeSegSize = [10, 10];
 
-  constructor() {}
+  constructor(
+    snakeSize: number = 3,
+    startCoords: number[] = [0, 0],
+    snakeDimensions: number[] = [10, 10]
+  ) {
+    this.snakeBody.coord = startCoords;
+    this.snakeSegSize = snakeDimensions;
+    let tempSnake = this.snakeBody;
+
+    if (snakeSize > 10) {
+      snakeSize = 3;
+    }
+    while (snakeSize - 1) {
+      tempSnake.next = {
+        next: null,
+        last: null,
+        coord: [tempSnake.coord[0] + snakeDimensions[0], tempSnake.coord[1]]
+      };
+      tempSnake = tempSnake.next;
+      snakeSize--;
+    }
+  }
 
   /**
    * This function should get the new x,y coordinate to add the head.

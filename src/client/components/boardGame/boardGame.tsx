@@ -21,7 +21,7 @@ export default function BoardGame() {
   };
 
   function animateSnake() {
-    cancelAnimationReturn.current = window.requestAnimationFrame(animateSnake);
+    // cancelAnimationReturn.current = window.requestAnimationFrame(animateSnake);
     drawSnake(canvasState, ctx.current!, snakeState.value!);
   }
   function resetGame() {
@@ -46,7 +46,7 @@ export default function BoardGame() {
 
       animateSnake();
       return () => {
-        window.cancelAnimationFrame(cancelAnimationReturn.current);
+        // window.cancelAnimationFrame(cancelAnimationReturn.current);
       };
     }
   }, [boardGameRef]);
@@ -87,21 +87,22 @@ function drawSnake(
   ctx: CanvasRenderingContext2D,
   snakeState: Snake
 ) {
-  console.log('running?');
   let snakeBody: SnakeBody | null = snakeState.snakeBody;
-  ctx.restore();
-  ctx.beginPath();
-  snakeState.moveSnake(5, 4);
-  while (snakeBody?.next) {
-    // snakeState.moveSnake(4, 5);
-    snakeBody = snakeBody!.next;
+  console.log(snakeBody.coord[0]);
+
+  ctx.fillStyle = 'red';
+  ctx.fillRect(10, 10, 10, 10);
+  // snakeState.moveSnake(5, 4);
+  while (snakeBody) {
+    ctx.fillStyle = 'rgb(0,0,255)';
     ctx.fillRect(
-      snakeBody.coord[0],
-      snakeBody.coord[1],
+      snakeBody!.coord[0],
+      snakeBody!.coord[1],
       snakeState.snakeSegSize[0],
       snakeState.snakeSegSize[1]
     );
-    ctx.fillStyle = 'rgb(0,0,255)';
+    ctx.fill();
+    snakeBody = snakeBody!.next;
   }
 }
 
