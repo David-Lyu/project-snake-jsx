@@ -22,10 +22,14 @@ export default function BoardGame() {
 
   function animateSnake() {
     cancelAnimationReturn.current = window.requestAnimationFrame(animateSnake);
-    drawSnake(canvasState, ctx.current!, snakeState.value!);
+    drawSnake(canvasState, ctx.current!, snakeState.value!, resetGame);
   }
   function resetGame() {
     window.cancelAnimationFrame(cancelAnimationReturn.current);
+  }
+
+  function handleUserInput(e: KeyboardEvent) {
+    onKeyDown(e, snakeState.value!);
   }
 
   //useLayoutEffect seems to be the more correct than useState
@@ -47,8 +51,10 @@ export default function BoardGame() {
       ]);
 
       animateSnake();
+      window.addEventListener('keydown', handleUserInput);
       return () => {
         window.cancelAnimationFrame(cancelAnimationReturn.current);
+        window.removeEventListener('keydown', handleUserInput);
       };
     }
   }, [boardGameRef]);
@@ -74,12 +80,7 @@ function drawBoard(
   const ctx = canvas.getContext('2d');
   if (ctx) {
     ctx.fillStyle = 'rgb(165,165,165)';
-    ctx.fillRect(
-      canvasState.grid[0],
-      canvasState.grid[1],
-      canvasState.width,
-      canvasState.height
-    );
+    ctx.fillRect(0, 0, canvasState.width, canvasState.height);
   }
   return ctx;
 }
@@ -87,21 +88,30 @@ function drawBoard(
 function drawSnake(
   canvasState: CanvasState,
   ctx: CanvasRenderingContext2D,
-  snakeState: Snake
+  snakeState: Snake,
+  resetGame: Function
 ) {
   let snakeBody: SnakeBody | null = snakeState.snakeBody;
-
+  if (
+    snakeBody.coord[0] < 0 ||
+    snakeBody.coord[0] > canvasState.width ||
+    snakeBody.coord[1] < 0 ||
+    snakeBody.coord[1] > canvasState.width
+  ) {
+    resetGame();
+  }
+  console.log('hello');
   switch (snakeState.direction) {
     case 'up':
       snakeState.moveSnake(
         snakeBody.coord[0],
-        snakeBody.coord[1] + snakeState.velocity
+        snakeBody.coord[1] - snakeState.velocity
       );
       break;
     case 'down':
       snakeState.moveSnake(
         snakeBody.coord[0],
-        snakeBody.coord[1] - snakeState.velocity
+        snakeBody.coord[1] + snakeState.velocity
       );
       break;
     case 'left':
@@ -147,19 +157,23 @@ function resize(canvasState: CanvasState) {
     canvasState.width = 200;
   }
 }
-function onKeyDown(e: KeyboardEvent) {
+function onKeyDown(e: KeyboardEvent, snakeState: Snake) {
   switch (e.key) {
     case 'w':
     case 'ArrowUp':
+      if (snakeState.direction !== 'down') snakeState.direction = 'up';
       break;
     case 'S':
     case 'ArrowDown':
+      if (snakeState.direction !== 'up') snakeState.direction = 'down';
       break;
     case 'A':
     case 'ArrowLeft':
+      if (snakeState.direction !== 'right') snakeState.direction = 'left';
       break;
     case 'D':
     case 'ArrowRight':
+      if (snakeState.direction !== 'left') snakeState.direction = 'right';
       break;
     default:
       null;
