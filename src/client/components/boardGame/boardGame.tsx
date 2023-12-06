@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { CanvasState, SnakeBody } from '../../types/boardgame';
-import GameBoard from '../../store/boardGame/boardGame';
+import GameBoard, { boardGameState } from '../../store/boardGame/boardGame';
 import { AppState } from '../../main';
 import Snake from '../../store/snake/snake';
 import BoardGameState from '../../store/boardGame/boardGame';
@@ -42,8 +42,8 @@ export default function BoardGame() {
       //need to change return value to ctx and pass in bordGameState
       ctx.current = drawBoard(
         boardGameRef.current,
-        canvasState,
-        boardGameState.value
+        canvasState
+        // boardGameState.value
       );
       snakeState.value = new Snake(4, [
         canvasState.width / 2,
@@ -74,8 +74,8 @@ export default function BoardGame() {
 /** HELPER FUNCTIONS **/
 function drawBoard(
   canvas: HTMLCanvasElement,
-  canvasState: CanvasState,
-  boardGameState: BoardGameState | null
+  canvasState: CanvasState
+  // boardGameState: BoardGameState | null
 ) {
   const ctx = canvas.getContext('2d');
   if (ctx) {
@@ -127,6 +127,8 @@ function drawSnake(
       );
       break;
   }
+
+  drawBoard(ctx.canvas, canvasState);
 
   // snakeState.moveSnake(5, 4);
   while (snakeBody) {
