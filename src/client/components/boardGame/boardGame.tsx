@@ -18,10 +18,11 @@ export default function BoardGame(props: { hasGameStarted: Signal<boolean> }) {
     width: 0,
     height: 0,
     grid: [10, 10],
-    hasStarted: false
+    hasStarted: false,
+    lastTime: 0
   };
 
-  function animateSnake() {
+  function animateSnake(timeStamp: number) {
     cancelAnimationReturn.current = window.requestAnimationFrame(animateSnake);
     drawSnake(canvasState, ctx.current!, snakeState.value!, resetGame);
   }
@@ -139,17 +140,17 @@ function drawSnake(
   ctx.lineJoin = 'round';
   ctx.moveTo(snakeBody!.coord[0], snakeBody!.coord[1]);
   snakeBody = snakeBody!.next;
-  // while (snakeBody) {
-  //   // ctx.fillRect(
-  //   //   snakeBody!.coord[0],
-  //   //   snakeBody!.coord[1],
-  //   //   snakeState.snakeSegSize[0],
-  //   //   snakeState.snakeSegSize[1]
-  //   // );
-  //   ctx.lineTo(snakeBody!.coord[0], snakeBody!.coord[1]);
-  //   snakeBody = snakeBody!.next;
-  // }
-  ctx.stroke();
+  while (snakeBody) {
+    // ctx.fillRect(
+    //   snakeBody!.coord[0],
+    //   snakeBody!.coord[1],
+    //   snakeState.snakeSegSize[0],
+    //   snakeState.snakeSegSize[1]
+    // );
+    ctx.lineTo(snakeBody!.coord[0], snakeBody!.coord[1]);
+    snakeBody = snakeBody!.next;
+    ctx.stroke();
+  }
   ctx.closePath();
 }
 
