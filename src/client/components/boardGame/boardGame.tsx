@@ -5,11 +5,12 @@ import GameBoard, { boardGameState } from '../../store/boardGame/boardGame';
 import { AppState } from '../../main';
 import Snake from '../../store/snake/snake';
 import BoardGameState from '../../store/boardGame/boardGame';
+import { Signal } from '@preact/signals';
 
-export default function BoardGame() {
+export default function BoardGame(props: { hasGameStarted: Signal<boolean> }) {
   console.log('hello');
   const { snake: snakeState, boardGame: boardGameState } = useContext(AppState);
-  const [canvasSize, setCanvasSize] = useState<number[]>([500, 500]);
+  const [canvasSize, setCanvasSize] = useState<number[]>([0, 0]);
   const boardGameRef: React.Ref<HTMLCanvasElement> = useRef(null);
   const ctx = useRef<CanvasRenderingContext2D | null>(null);
   const cancelAnimationReturn = useRef<number>(0);
@@ -29,6 +30,7 @@ export default function BoardGame() {
   }
 
   function handleUserInput(e: KeyboardEvent) {
+    e.preventDefault();
     onKeyDown(e, snakeState.value!);
   }
 
@@ -45,10 +47,11 @@ export default function BoardGame() {
         canvasState
         // boardGameState.value
       );
-      snakeState.value = new Snake(4, [
-        canvasState.width / 2,
-        canvasState.height / 2
-      ]);
+      snakeState.value = new Snake(
+        4,
+        [canvasState.width / 2, canvasState.height / 2],
+        [canvasState.width * 0.1, canvasState.height * 0.1]
+      );
 
       animateSnake();
       window.addEventListener('keydown', handleUserInput);
@@ -61,9 +64,6 @@ export default function BoardGame() {
 
   return (
     <div>
-      <button className="reset-game" onClick={resetGame}>
-        Click to reset
-      </button>
       <canvas ref={boardGameRef} width={canvasSize[0]} height={canvasSize[1]}>
         No Game Available
       </canvas>
@@ -94,10 +94,13 @@ function drawSnake(
   let snakeBody: SnakeBody | null = snakeState.snakeBody;
   if (
     snakeBody.coord[0] < 0 ||
-    snakeBody.coord[0] > canvasState.width ||
+    snakeBody.coord[0] >= canvasState.width - snakeState.snakeSegSize[0] ||
     snakeBody.coord[1] < 0 ||
-    snakeBody.coord[1] > canvasState.width
+    snakeBody.coord[1] >= canvasState.height - snakeState.snakeSegSize[1]
   ) {
+    console.log(snakeState);
+    console.log(canvasState);
+    console.log(snakeBody);
     resetGame();
   }
   console.log('hello');
@@ -129,29 +132,38 @@ function drawSnake(
   }
 
   drawBoard(ctx.canvas, canvasState);
-
   // snakeState.moveSnake(5, 4);
+  ctx.beginPath();
   while (snakeBody) {
-    ctx.fillStyle = 'rgb(0,0,255)';
-    ctx.fillRect(
-      snakeBody!.coord[0],
-      snakeBody!.coord[1],
-      snakeState.snakeSegSize[0],
-      snakeState.snakeSegSize[1]
-    );
-    ctx.fill();
+    ctx.fillStyle = `rgb(${Math.round(Math.random() * 255)},0,255)`;
+    ctx.lineWidth = snakeState.snakeSegSize[0];
+    // ctx.lineJoin = 'bevel';
+    ctx.moveTo(snakeBody!.coord[0], snakeBody!.coord[1]);
+    // ctx.fillRect(
+    //   snakeBody!.coord[0],
+    //   snakeBody!.coord[1],
+    //   snakeState.snakeSegSize[0],
+    //   snakeState.snakeSegSize[1]
+    // );
+    ctx.lineTo(snakeBody!.coord[0], snakeBody!.coord[1]);
+    ctx.stroke();
     snakeBody = snakeBody!.next;
   }
+  ctx.closePath();
 }
 
 /** NAMED EVENT FUNCTIONS **/
 //todo: Need to figure out a way to get window to resize
 function resize(canvasState: CanvasState) {
   const size = window.innerWidth;
-  if (size >= 1024) {
+  console.log(size);
+  if (size >= 500) {
     canvasState.height = 500;
     canvasState.width = 500;
-  } else if (size >= 600) {
+  } else if (size >= 400) {
+    canvasState.height = 400;
+    canvasState.width = 400;
+  } else if (size >= 300) {
     canvasState.height = 300;
     canvasState.width = 300;
   } else {
