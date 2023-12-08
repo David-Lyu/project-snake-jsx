@@ -23,8 +23,11 @@ export default function BoardGame(props: { hasGameStarted: Signal<boolean> }) {
   };
 
   function animateSnake(timeStamp: number) {
+    if (timeStamp === 0 || timeStamp - canvasState.lastTime > 2000) {
+      drawSnake(canvasState, ctx.current!, snakeState.value!, resetGame);
+      canvasState.lastTime = timeStamp;
+    }
     cancelAnimationReturn.current = window.requestAnimationFrame(animateSnake);
-    drawSnake(canvasState, ctx.current!, snakeState.value!, resetGame);
   }
   function resetGame() {
     window.cancelAnimationFrame(cancelAnimationReturn.current);
@@ -54,7 +57,7 @@ export default function BoardGame(props: { hasGameStarted: Signal<boolean> }) {
         [canvasState.width * 0.1, canvasState.height * 0.1]
       );
 
-      animateSnake();
+      animateSnake(0);
       window.addEventListener('keydown', handleUserInput);
       return () => {
         window.cancelAnimationFrame(cancelAnimationReturn.current);
@@ -92,6 +95,7 @@ function drawSnake(
   snakeState: Snake,
   resetGame: Function
 ) {
+  //set a conditional to see if time and velocity are between the time you want
   let snakeBody: SnakeBody | null = snakeState.snakeBody;
   if (
     snakeBody.coord[0] < 0 ||
