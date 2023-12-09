@@ -14,28 +14,41 @@ export default function BoardGame(props: { hasGameStarted: Signal<boolean> }) {
   const boardGameRef: React.Ref<HTMLCanvasElement> = useRef(null);
   const ctx = useRef<CanvasRenderingContext2D | null>(null);
   const cancelAnimationReturn = useRef<number>(0);
+  //this should be ref or signal since last time and currentTime and canAcceptKeyDown are reactive
   const canvasState: CanvasState = {
     width: 0,
     height: 0,
     grid: [10, 10],
     hasStarted: false,
-    lastTime: 0
+    canAcceptKeyDown: false,
+    lastTime: 0,
+    currentTime: 0
   };
 
   function animateSnake(timeStamp: number) {
-    if (timeStamp === 0 || timeStamp - canvasState.lastTime > 2000) {
-      drawSnake(canvasState, ctx.current!, snakeState.value!, resetGame);
+    //has to be first to cancel request Animation needs to be set before calling draw snake
+    if (
+      timeStamp === 0 ||
+      timeStamp - canvasState.lastTime > snakeState.value!.velocity
+    ) {
+      canvasState.canAcceptKeyDown = true;
+      drawSnake(canvasState, ctx.current!, snakeState.value!);
+      console.log('snake coords');
+      console.log(snakeState);
       canvasState.lastTime = timeStamp;
     }
     cancelAnimationReturn.current = window.requestAnimationFrame(animateSnake);
-  }
-  function resetGame() {
-    window.cancelAnimationFrame(cancelAnimationReturn.current);
+    resetGame(cancelAnimationReturn.current, snakeState.value!, canvasState);
   }
 
   function handleUserInput(e: KeyboardEvent) {
     e.preventDefault();
-    onKeyDown(e, snakeState.value!);
+    if (
+      canvasState.currentTime - canvasState.lastTime <=
+      snakeState.value!.velocity
+    ) {
+      onKeyDown(e, snakeState.value!, canvasState);
+    }
   }
 
   //useLayoutEffect seems to be the more correct than useState
@@ -54,7 +67,7 @@ export default function BoardGame(props: { hasGameStarted: Signal<boolean> }) {
       snakeState.value = new Snake(
         4,
         [canvasState.width / 2, canvasState.height / 2],
-        [canvasState.width * 0.1, canvasState.height * 0.1]
+        [canvasState.width / 20, canvasState.height / 20]
       );
 
       animateSnake(0);
@@ -92,45 +105,33 @@ function drawBoard(
 function drawSnake(
   canvasState: CanvasState,
   ctx: CanvasRenderingContext2D,
-  snakeState: Snake,
-  resetGame: Function
+  snakeState: Snake
 ) {
-  //set a conditional to see if time and velocity are between the time you want
   let snakeBody: SnakeBody | null = snakeState.snakeBody;
-  if (
-    snakeBody.coord[0] < 0 ||
-    snakeBody.coord[0] >= canvasState.width - snakeState.snakeSegSize[0] ||
-    snakeBody.coord[1] < 0 ||
-    snakeBody.coord[1] >= canvasState.height - snakeState.snakeSegSize[1]
-  ) {
-    console.log(snakeState);
-    console.log(canvasState);
-    console.log(snakeBody);
-    resetGame();
-  }
-  console.log('hello');
+  let translateX = 0;
+  let translateY = 0;
   switch (snakeState.direction) {
     case 'up':
       snakeState.moveSnake(
         snakeBody.coord[0],
-        snakeBody.coord[1] - snakeState.velocity
+        snakeBody.coord[1] - snakeState.snakeSegSize[1]
       );
       break;
     case 'down':
       snakeState.moveSnake(
         snakeBody.coord[0],
-        snakeBody.coord[1] + snakeState.velocity
+        snakeBody.coord[1] + snakeState.snakeSegSize[1]
       );
       break;
     case 'left':
       snakeState.moveSnake(
-        snakeBody.coord[0] - snakeState.velocity,
+        snakeBody.coord[0] - snakeState.snakeSegSize[0],
         snakeBody.coord[1]
       );
       break;
     case 'right':
       snakeState.moveSnake(
-        snakeBody.coord[0] + snakeState.velocity,
+        snakeBody.coord[0] + snakeState.snakeSegSize[0],
         snakeBody.coord[1]
       );
       break;
@@ -138,22 +139,24 @@ function drawSnake(
 
   drawBoard(ctx.canvas, canvasState);
   // snakeState.moveSnake(5, 4);
-  ctx.beginPath();
-  ctx.fillStyle = `rgb(${Math.round(Math.random() * 255)},0,255)`;
-  ctx.lineWidth = snakeState.snakeSegSize[0];
-  ctx.lineJoin = 'round';
-  ctx.moveTo(snakeBody!.coord[0], snakeBody!.coord[1]);
-  snakeBody = snakeBody!.next;
+  // ctx.fillStyle = `rgb(${Math.round(Math.random() * 255)},0,255)`;
+  // ctx.lineWidth = snakeState.snakeSegSize[0];
+  // ctx.lineJoin = 'round';
+  // ctx.moveTo(snakeBody!.coord[0], snakeBody!.coord[1]);
+  // snakeBody = snakeBody!.next;
   while (snakeBody) {
-    // ctx.fillRect(
-    //   snakeBody!.coord[0],
-    //   snakeBody!.coord[1],
-    //   snakeState.snakeSegSize[0],
-    //   snakeState.snakeSegSize[1]
-    // );
-    ctx.lineTo(snakeBody!.coord[0], snakeBody!.coord[1]);
+    ctx.beginPath();
+    ctx.fillStyle = 'green';
+    ctx.fillRect(
+      snakeBody!.coord[0],
+      snakeBody!.coord[1],
+      snakeState.snakeSegSize[0],
+      snakeState.snakeSegSize[1]
+    );
+    // ctx.lineTo(snakeBody!.coord[0], snakeBody!.coord[1]);
     snakeBody = snakeBody!.next;
-    ctx.stroke();
+    // ctx.stroke();
+    // ctx.fillRect();
   }
   ctx.closePath();
 }
@@ -177,7 +180,15 @@ function resize(canvasState: CanvasState) {
     canvasState.width = 200;
   }
 }
-function onKeyDown(e: KeyboardEvent, snakeState: Snake) {
+function onKeyDown(
+  e: KeyboardEvent,
+  snakeState: Snake,
+  canvasState: CanvasState
+) {
+  if (!canvasState.canAcceptKeyDown) {
+    return;
+  }
+
   switch (e.key) {
     case 'w':
     case 'ArrowUp':
@@ -197,5 +208,23 @@ function onKeyDown(e: KeyboardEvent, snakeState: Snake) {
       break;
     default:
       null;
+  }
+  canvasState.canAcceptKeyDown = false;
+}
+
+function resetGame(
+  cancelAnimation: number,
+  snakeState: Snake,
+  canvasState: CanvasState
+) {
+  if (
+    snakeState.snakeBody.coord[0] <= 0 ||
+    snakeState.snakeBody.coord[0] >=
+      canvasState.width + snakeState.snakeSegSize[0] ||
+    snakeState.snakeBody.coord[1] <= -snakeState.snakeSegSize[1] ||
+    snakeState.snakeBody.coord[1] >=
+      canvasState.height + snakeState.snakeSegSize[1]
+  ) {
+    window.cancelAnimationFrame(cancelAnimation);
   }
 }

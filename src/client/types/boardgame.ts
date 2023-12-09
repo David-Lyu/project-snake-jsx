@@ -8,7 +8,9 @@ export type CanvasState = {
   height: number;
   grid: number[];
   hasStarted: boolean;
+  canAcceptKeyDown: boolean;
   lastTime: number;
+  currentTime: number;
 };
 
 //linkedList

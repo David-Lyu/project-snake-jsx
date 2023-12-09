@@ -24,7 +24,7 @@ export default class Snake {
     this.snakeSegSize = snakeDimensions;
     this.direction = direction;
     //60 fps so if you want it to move one snake segment per second divide by 60
-    this.velocity = this.snakeSegSize[0];
+    this.velocity = 600;
 
     this.initSnake(snakeSize);
   }
@@ -90,7 +90,7 @@ export default class Snake {
     if (snakeSize > 10) {
       snakeSize = 3;
     }
-    while (snakeSize) {
+    while (snakeSize - 1) {
       tempSnake.next = {
         next: null,
         last: null,
