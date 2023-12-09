@@ -34,7 +34,8 @@ export default function BoardGame(props: { hasGameStarted: Signal<boolean> }) {
       canvasState.canAcceptKeyDown = true;
       drawSnake(canvasState, ctx.current!, snakeState.value!);
       console.log('snake coords');
-      console.log(snakeState);
+      console.log(snakeState.value?.snakeBody.coord[0]);
+      console.log(snakeState.value?.snakeBody.coord[1]);
       canvasState.lastTime = timeStamp;
     }
     cancelAnimationReturn.current = window.requestAnimationFrame(animateSnake);
@@ -217,13 +218,15 @@ function resetGame(
   snakeState: Snake,
   canvasState: CanvasState
 ) {
+  /**
+   * The reason why the upper limit is the max width is because the coords start from left
+   * and then fill to the right. Same for the height
+   */
   if (
-    snakeState.snakeBody.coord[0] <= 0 ||
-    snakeState.snakeBody.coord[0] >=
-      canvasState.width + snakeState.snakeSegSize[0] ||
+    snakeState.snakeBody.coord[0] <= -snakeState.snakeSegSize[0] ||
+    snakeState.snakeBody.coord[0] >= canvasState.width ||
     snakeState.snakeBody.coord[1] <= -snakeState.snakeSegSize[1] ||
-    snakeState.snakeBody.coord[1] >=
-      canvasState.height + snakeState.snakeSegSize[1]
+    snakeState.snakeBody.coord[1] >= canvasState.height
   ) {
     window.cancelAnimationFrame(cancelAnimation);
   }
