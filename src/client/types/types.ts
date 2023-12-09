@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Signal } from '@preact/signals';
 import Snake from '../store/snake/snake';
-import BoardGame from '../store/boardGame/boardGame';
+import BoardGame from '../store/boardGame/boardGameState';
 
 //Store (is it needed?)
 export type Store = {

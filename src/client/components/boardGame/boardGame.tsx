@@ -1,20 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { CanvasState, SnakeBody } from '../../types/boardgame';
-import GameBoard, { boardGameState } from '../../store/boardGame/boardGame';
+import GameBoard, {
+  boardGameState
+} from '../../store/boardGame/boardGameState';
 import { AppState } from '../../main';
 import Snake from '../../store/snake/snake';
-import BoardGameState from '../../store/boardGame/boardGame';
 import { Signal } from '@preact/signals';
 
 export default function BoardGame(props: { hasGameStarted: Signal<boolean> }) {
-  console.log('hello');
   const { snake: snakeState, boardGame: boardGameState } = useContext(AppState);
   const [canvasSize, setCanvasSize] = useState<number[]>([0, 0]);
   const boardGameRef: React.Ref<HTMLCanvasElement> = useRef(null);
   const ctx = useRef<CanvasRenderingContext2D | null>(null);
   const cancelAnimationReturn = useRef<number>(0);
-  //this should be ref or signal since last time and currentTime and canAcceptKeyDown are reactive
+  /**this should be ref or signal since last time and currentTime and
+   * canAcceptKeyDown are reactive, but since logic is happening in the
+   * canvas react component is not re rendering. In the future if something
+   * causes re-rendering then this needs to change
+   *
+   */
   const canvasState: CanvasState = {
     width: 0,
     height: 0,
@@ -138,6 +143,7 @@ function drawSnake(
 
   drawBoard(ctx.canvas, canvasState);
 
+  /** When using image we want to take head logic out and make the while loop for body */
   while (snakeBody) {
     ctx.beginPath();
     ctx.fillStyle = 'green';
