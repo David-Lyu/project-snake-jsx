@@ -109,8 +109,6 @@ function drawSnake(
   snakeState: Snake
 ) {
   let snakeBody: SnakeBody | null = snakeState.snakeBody;
-  let translateX = 0;
-  let translateY = 0;
   switch (snakeState.direction) {
     case 'up':
       snakeState.moveSnake(
@@ -139,12 +137,7 @@ function drawSnake(
   }
 
   drawBoard(ctx.canvas, canvasState);
-  // snakeState.moveSnake(5, 4);
-  // ctx.fillStyle = `rgb(${Math.round(Math.random() * 255)},0,255)`;
-  // ctx.lineWidth = snakeState.snakeSegSize[0];
-  // ctx.lineJoin = 'round';
-  // ctx.moveTo(snakeBody!.coord[0], snakeBody!.coord[1]);
-  // snakeBody = snakeBody!.next;
+
   while (snakeBody) {
     ctx.beginPath();
     ctx.fillStyle = 'green';
@@ -154,10 +147,7 @@ function drawSnake(
       snakeState.snakeSegSize[0],
       snakeState.snakeSegSize[1]
     );
-    // ctx.lineTo(snakeBody!.coord[0], snakeBody!.coord[1]);
     snakeBody = snakeBody!.next;
-    // ctx.stroke();
-    // ctx.fillRect();
   }
   ctx.closePath();
 }
