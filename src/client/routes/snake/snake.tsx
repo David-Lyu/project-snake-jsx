@@ -1,9 +1,20 @@
 import { Link } from 'react-router-dom';
 import BoardGame from '../../components/boardGame/boardGame';
-import { signal } from '@preact/signals';
+import { effect, signal } from '@preact/signals';
+import { useLayoutEffect, useRef } from 'react';
 
 export default function Snake() {
   const hasGameStarted = signal(false);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useLayoutEffect(() => {
+    if (dialogRef.current) {
+      dialogRef.current.addEventListener('click', () => {
+        hasGameStarted.value = true;
+        dialogRef.current!.close();
+      });
+    }
+  }, []);
 
   return (
     <div className="snake-game">
@@ -11,7 +22,9 @@ export default function Snake() {
         <div className="score"></div>
         {/* placeholder for boardgame component */}
         <BoardGame hasGameStarted={hasGameStarted}></BoardGame>
-        <dialog open>Press Button to Play</dialog>
+        <dialog open ref={dialogRef}>
+          Press Button to Play
+        </dialog>
       </div>
       <div className="container">
         <Link to="/">Go Back</Link>
