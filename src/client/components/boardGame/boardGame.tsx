@@ -1,21 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState
-} from 'react';
-import { CanvasState, SnakeBody } from '../../types/boardgame';
+import { useContext, useLayoutEffect, useRef, useState } from 'react';
+import { SnakeBody } from '../../types/boardgame';
 import GameBoard, {
   boardGameState
 } from '../../store/boardGame/boardGameState';
 import { AppState } from '../../main';
 import Snake from '../../store/snake/snake';
-import { Signal, effect } from '@preact/signals';
+import CanvasState from '../../store/canvasState/canvasState';
 
-export default function BoardGame(props: { hasGameStarted: Signal<boolean> }) {
-  const { snake: snakeState, boardGame: boardGameState } = useContext(AppState);
+//Todo: Need to open input when user is in mobile
+export default function BoardGame() {
+  const {
+    snake: snakeState,
+    boardGame: boardGameState,
+    canvasState
+  } = useContext(AppState);
   const [canvasSize, setCanvasSize] = useState<number[]>([0, 0]);
   const boardGameRef: React.Ref<HTMLCanvasElement> = useRef(null);
   const ctx = useRef<CanvasRenderingContext2D | null>(null);
@@ -26,40 +25,43 @@ export default function BoardGame(props: { hasGameStarted: Signal<boolean> }) {
    * causes re-rendering then this needs to change
    *
    */
-  const canvasState: CanvasState = {
-    width: 0,
-    height: 0,
-    grid: [10, 10],
-    hasStarted: false,
-    canAcceptKeyDown: false,
-    lastTime: 0,
-    currentTime: 0
-  };
+  // const canvasState: CanvasState = {
+  //   width: 0,
+  //   height: 0,
+  //   grid: [10, 10],
+  //   canAcceptKeyDown: false,
+  //   lastTime: 0,
+  //   currentTime: 0
+  // };
 
   function animateSnake(timeStamp: number) {
     //has to be first to cancel request Animation needs to be set before calling draw snake
     if (
       timeStamp === 0 ||
-      timeStamp - canvasState.lastTime > snakeState.value!.velocity
+      timeStamp - canvasState.value.lastTime > snakeState.value!.velocity
     ) {
-      canvasState.canAcceptKeyDown = true;
-      drawSnake(canvasState, ctx.current!, snakeState.value!);
-      console.log('snake coords');
-      console.log(snakeState.value?.snakeBody.coord[0]);
-      console.log(snakeState.value?.snakeBody.coord[1]);
-      canvasState.lastTime = timeStamp;
+      canvasState.value.canAcceptKeyDown = true;
+      drawSnake(canvasState.value, ctx.current!, snakeState.value!);
+      // console.log('snake coords');
+      // console.log(snakeState.value?.snakeBody.coord[0]);
+      // console.log(snakeState.value?.snakeBody.coord[1]);
+      canvasState.value.lastTime = timeStamp;
     }
     cancelAnimationReturn.current = window.requestAnimationFrame(animateSnake);
-    resetGame(cancelAnimationReturn.current, snakeState.value!, canvasState);
+    resetGame(
+      cancelAnimationReturn.current,
+      snakeState.value!,
+      canvasState.value
+    );
   }
 
   function handleUserInput(e: KeyboardEvent) {
     e.preventDefault();
     if (
-      canvasState.currentTime - canvasState.lastTime <=
+      canvasState.value.currentTime - canvasState.value.lastTime <=
       snakeState.value!.velocity
     ) {
-      onKeyDown(e, snakeState.value!, canvasState);
+      onKeyDown(e, snakeState.value!, canvasState.value);
     }
   }
 
@@ -67,28 +69,22 @@ export default function BoardGame(props: { hasGameStarted: Signal<boolean> }) {
   useLayoutEffect(() => {
     console.log('inside layout effect');
     if (boardGameRef?.current) {
-      resize(canvasState);
+      canvasState.value.resize();
       //make this x,y coords
-      setCanvasSize([canvasState.width, canvasState.height]);
-      //need to change return value to ctx and pass in bordGameState
-      ctx.current = drawBoard(boardGameRef.current, canvasState);
+      setCanvasSize([canvasState.value.width, canvasState.value.height]);
+      ctx.current = drawBoard(boardGameRef.current, canvasState.value);
 
-      const unSubHasGameStarted = props.hasGameStarted.subscribe((value) => {
-        if (value) {
-          snakeState.value = new Snake(
-            4,
-            [canvasState.width / 2, canvasState.height / 2],
-            [canvasState.width / 20, canvasState.height / 20]
-          );
-          animateSnake(0);
-          window.addEventListener('keydown', handleUserInput);
-        }
-      });
+      snakeState.value = new Snake(
+        4,
+        [canvasState.value.width / 2, canvasState.value.height / 2],
+        [canvasState.value.width / 20, canvasState.value.height / 20]
+      );
+      animateSnake(0);
+      window.addEventListener('keydown', handleUserInput);
 
       return () => {
         window.cancelAnimationFrame(cancelAnimationReturn.current);
         window.removeEventListener('keydown', handleUserInput);
-        // unSubHasGameStarted();
       };
     }
   }, [boardGameRef]);
@@ -152,7 +148,6 @@ function drawSnake(
   }
 
   drawBoard(ctx.canvas, canvasState);
-
   /** When using image we want to take head logic out and make the while loop for body */
   while (snakeBody) {
     ctx.beginPath();
@@ -170,22 +165,7 @@ function drawSnake(
 
 /** NAMED EVENT FUNCTIONS **/
 //todo: Need to figure out a way to get window to resize
-function resize(canvasState: CanvasState) {
-  const size = window.innerWidth;
-  if (size >= 500) {
-    canvasState.height = 500;
-    canvasState.width = 500;
-  } else if (size >= 400) {
-    canvasState.height = 400;
-    canvasState.width = 400;
-  } else if (size >= 300) {
-    canvasState.height = 300;
-    canvasState.width = 300;
-  } else {
-    canvasState.height = 200;
-    canvasState.width = 200;
-  }
-}
+
 function onKeyDown(
   e: KeyboardEvent,
   snakeState: Snake,

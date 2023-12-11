@@ -2,11 +2,13 @@ import { userState } from './user/user';
 import { Store } from '../types/types';
 import { snakeState } from './snake/snake';
 import { boardGameState } from './boardGame/boardGameState';
+import { canvasState } from './canvasState/canvasState';
 
 export default function createAppState(): Store {
   return {
     user: userState,
     snake: snakeState,
-    boardGame: boardGameState
+    boardGame: boardGameState,
+    canvasState: canvasState
   };
 }

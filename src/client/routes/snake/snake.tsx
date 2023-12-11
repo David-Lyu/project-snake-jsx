@@ -1,30 +1,31 @@
 import { Link } from 'react-router-dom';
 import BoardGame from '../../components/boardGame/boardGame';
-import { effect, signal } from '@preact/signals';
-import { useLayoutEffect, useRef } from 'react';
+import { Signal, effect, signal } from '@preact/signals';
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState
+} from 'react';
+import StartGameModal from '../../components/startGameModal/startGameModal';
+import { AppState } from '../../main';
 
 export default function Snake() {
-  const hasGameStarted = signal(false);
-  const dialogRef = useRef<HTMLDialogElement>(null);
-
-  useLayoutEffect(() => {
-    if (dialogRef.current) {
-      dialogRef.current.addEventListener('click', () => {
-        hasGameStarted.value = true;
-        dialogRef.current!.close();
-      });
-    }
-  }, []);
+  //honestly better to refactor and just use useState
+  const [hasGameStarted, setHasGameStarted] = useState(false);
 
   return (
     <div className="snake-game">
       <div className={`container ${!hasGameStarted ? 'blur' : ''}`}>
+        {/* Placeholder for score board */}
         <div className="score"></div>
-        {/* placeholder for boardgame component */}
-        <BoardGame hasGameStarted={hasGameStarted}></BoardGame>
-        <dialog open ref={dialogRef}>
-          Press Button to Play
-        </dialog>
+        {/* <BoardGame hasGameStarted={hasGameStarted}></BoardGame> */}
+        {!hasGameStarted ? (
+          <StartGameModal setHasGameStarted={setHasGameStarted} />
+        ) : (
+          <BoardGame />
+        )}
       </div>
       <div className="container">
         <Link to="/">Go Back</Link>
