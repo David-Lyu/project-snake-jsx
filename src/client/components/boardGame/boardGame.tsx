@@ -7,6 +7,7 @@ import GameBoard, {
 import { AppState } from '../../main';
 import Snake from '../../store/snake/snake';
 import CanvasState from '../../store/canvasState/canvasState';
+import BoardGameState from '../../store/boardGame/boardGameState';
 
 //need to move out with startGameModal
 type Props = {
@@ -46,7 +47,12 @@ export default function BoardGame(props: Props) {
       timeStamp - canvasState.value.lastTime > snakeState.value!.velocity
     ) {
       canvasState.value.canAcceptKeyDown = true;
-      drawSnake(canvasState.value, ctx.current!, snakeState.value!);
+      drawSnake(
+        canvasState.value,
+        ctx.current!,
+        snakeState.value!,
+        boardGameState.value!
+      );
       // console.log('snake coords');
       // console.log(snakeState.value?.snakeBody.coord[0]);
       // console.log(snakeState.value?.snakeBody.coord[1]);
@@ -76,15 +82,28 @@ export default function BoardGame(props: Props) {
     console.log('inside layout effect');
     if (boardGameRef?.current) {
       canvasState.value.resize();
-      //make this x,y coords
-      setCanvasSize([canvasState.value.width, canvasState.value.height]);
-      ctx.current = drawBoard(boardGameRef.current, canvasState.value);
 
       snakeState.value = new Snake(
         4,
         [canvasState.value.width / 2, canvasState.value.height / 2],
         [canvasState.value.width / 20, canvasState.value.height / 20]
       );
+
+      boardGameState.value = new BoardGameState([
+        canvasState.value.width,
+        canvasState.value.height
+      ]);
+
+      boardGameState.value?.createFood(snakeState.value!);
+      //make this x,y coords
+      setCanvasSize([canvasState.value.width, canvasState.value.height]);
+      ctx.current = drawBoard(
+        boardGameRef.current,
+        canvasState.value,
+        boardGameState.value!,
+        snakeState.value!
+      );
+
       animateSnake(0);
       window.addEventListener('keydown', handleUserInput);
 
@@ -107,8 +126,9 @@ export default function BoardGame(props: Props) {
 /** HELPER FUNCTIONS **/
 function drawBoard(
   canvas: HTMLCanvasElement,
-  canvasState: CanvasState
-  // boardGameState: BoardGameState | null
+  canvasState: CanvasState,
+  boardGameState: BoardGameState | null,
+  snakeState: Snake
 ) {
   const ctx = canvas.getContext('2d');
   if (ctx) {
@@ -116,6 +136,15 @@ function drawBoard(
     ctx.fillStyle = 'rgb(165,165,165)';
     ctx.fillRect(0, 0, canvasState.width, canvasState.height);
     ctx.closePath();
+
+    ctx.beginPath();
+    ctx.fillStyle = 'rgb(255,0,0)';
+    ctx.fillRect(
+      boardGameState!.foodCoord[0],
+      boardGameState!.foodCoord[1],
+      snakeState.snakeSegSize[0],
+      snakeState.snakeSegSize[1]
+    );
   }
   return ctx;
 }
@@ -123,7 +152,8 @@ function drawBoard(
 function drawSnake(
   canvasState: CanvasState,
   ctx: CanvasRenderingContext2D,
-  snakeState: Snake
+  snakeState: Snake,
+  boardGameState: BoardGameState
 ) {
   let snakeBody: SnakeBody | null = snakeState.snakeBody;
   switch (snakeState.direction) {
@@ -153,7 +183,14 @@ function drawSnake(
       break;
   }
 
-  drawBoard(ctx.canvas, canvasState);
+  if (
+    snakeBody.coord[0] === boardGameState.foodCoord[0] &&
+    snakeBody.coord[1] === boardGameState.foodCoord[1]
+  ) {
+    boardGameState.createFood(snakeState);
+  }
+
+  drawBoard(ctx.canvas, canvasState, boardGameState, snakeState);
   /** When using image we want to take head logic out and make the while loop for body */
   while (snakeBody) {
     ctx.beginPath();
@@ -166,6 +203,7 @@ function drawSnake(
     );
     snakeBody = snakeBody!.next;
   }
+
   ctx.closePath();
 }
 
