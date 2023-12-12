@@ -24,7 +24,7 @@ export default function Snake() {
         {!hasGameStarted ? (
           <StartGameModal setHasGameStarted={setHasGameStarted} />
         ) : (
-          <BoardGame />
+          <BoardGame setHasGameStarted={setHasGameStarted} />
         )}
       </div>
       <div className="container">

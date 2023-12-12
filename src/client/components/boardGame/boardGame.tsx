@@ -8,8 +8,13 @@ import { AppState } from '../../main';
 import Snake from '../../store/snake/snake';
 import CanvasState from '../../store/canvasState/canvasState';
 
+//need to move out with startGameModal
+type Props = {
+  setHasGameStarted: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
 //Todo: Need to open input when user is in mobile
-export default function BoardGame() {
+export default function BoardGame(props: Props) {
   const {
     snake: snakeState,
     boardGame: boardGameState,
@@ -51,7 +56,8 @@ export default function BoardGame() {
     resetGame(
       cancelAnimationReturn.current,
       snakeState.value!,
-      canvasState.value
+      canvasState.value,
+      props.setHasGameStarted
     );
   }
 
@@ -201,7 +207,8 @@ function onKeyDown(
 function resetGame(
   cancelAnimation: number,
   snakeState: Snake,
-  canvasState: CanvasState
+  canvasState: CanvasState,
+  setHasGameStarted: React.Dispatch<React.SetStateAction<boolean>>
 ) {
   /**
    * The reason why the upper limit is the max width is because the coords start from left
@@ -214,5 +221,7 @@ function resetGame(
     snakeState.snakeBody.coord[1] >= canvasState.height
   ) {
     window.cancelAnimationFrame(cancelAnimation);
+    //make modal and play again?
+    setHasGameStarted(false);
   }
 }
