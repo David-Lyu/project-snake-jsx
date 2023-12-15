@@ -1,5 +1,6 @@
 import { Signal, signal } from '@preact/signals';
 import { SnakeBody } from '../../types/boardgame';
+import BoardGameState from '../boardGame/boardGameState';
 
 export const snakeState: Signal<Snake | null> = signal(null);
 
@@ -101,6 +102,53 @@ export default class Snake {
     }
   }
 
+  getNextSnakeCoord(boardGameState: BoardGameState): number[] {
+    switch (this.direction) {
+      case 'up':
+        if (this.snakeBody.coord[1] - this.snakeSegSize[1] < 0) {
+          return [this.handleYAxisEdge(), this.snakeBody.coord[1]];
+        } else {
+          return [
+            this.snakeBody.coord[0],
+            this.snakeBody.coord[1] - this.snakeSegSize[1]
+          ];
+        }
+      case 'down':
+        if (
+          this.snakeBody.coord[1] + this.snakeSegSize[1] >
+          boardGameState.dimensions[1] - this.snakeSegSize[1]
+        ) {
+          return [this.handleYAxisEdge(), this.snakeBody.coord[1]];
+        } else {
+          return [
+            this.snakeBody.coord[0],
+            this.snakeBody.coord[1] + this.snakeSegSize[1]
+          ];
+        }
+      case 'left':
+        if (this.snakeBody.coord[0] - this.snakeSegSize[0] < 0) {
+          return [this.snakeBody.coord[0], this.handleXAxisEdge()];
+        } else {
+          return [
+            this.snakeBody.coord[0] - this.snakeSegSize[0],
+            this.snakeBody.coord[1]
+          ];
+        }
+      case 'right':
+        if (
+          this.snakeBody.coord[0] - this.snakeSegSize[0] >
+          boardGameState.dimensions[0] - this.snakeSegSize[0]
+        ) {
+          return [this.snakeBody.coord[0], this.handleXAxisEdge()];
+        } else {
+          return [
+            this.snakeBody.coord[0] + this.snakeSegSize[0],
+            this.snakeBody.coord[1]
+          ];
+        }
+    }
+  }
+
   restart() {
     this.snakeBody = {
       next: null,
@@ -109,5 +157,26 @@ export default class Snake {
     };
 
     this.snakeSegSize = [0, 0];
+  }
+
+  //helper functions
+  handleYAxisEdge() {
+    if (this.snakeBody.coord[0] <= 0) {
+      this.direction = 'right';
+      return this.snakeBody.coord[0] + this.snakeSegSize[0];
+    } else {
+      this.direction = 'left';
+      return this.snakeBody.coord[0] - this.snakeSegSize[0];
+    }
+  }
+
+  handleXAxisEdge() {
+    if (this.snakeBody.coord[1] <= 0) {
+      this.direction = 'up';
+      return this.snakeBody.coord[1] + this.snakeSegSize[1];
+    } else {
+      this.direction = 'down';
+      return this.snakeBody.coord[1] - this.snakeSegSize[1];
+    }
   }
 }

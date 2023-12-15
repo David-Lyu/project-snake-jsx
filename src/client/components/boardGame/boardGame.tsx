@@ -187,6 +187,7 @@ function drawSnake(
     snakeBody.coord[0] === boardGameState.foodCoord[0] &&
     snakeBody.coord[1] === boardGameState.foodCoord[1]
   ) {
+    // snakeState.addSnakeBody();
     boardGameState.createFood(snakeState);
   }
 
