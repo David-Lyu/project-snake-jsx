@@ -156,12 +156,10 @@ function drawSnake(
   boardGameState: BoardGameState
 ) {
   let snakeBody: SnakeBody | null = snakeState.snakeBody;
+  const coords: [number, number] = snakeState.getNextSnakeCoord(boardGameState);
   switch (snakeState.direction) {
     case 'up':
-      snakeState.moveSnake(
-        snakeBody.coord[0],
-        snakeBody.coord[1] - snakeState.snakeSegSize[1]
-      );
+      // snakeState.moveSnake(...[coords]);
       break;
     case 'down':
       snakeState.moveSnake(

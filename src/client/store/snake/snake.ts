@@ -102,7 +102,7 @@ export default class Snake {
     }
   }
 
-  getNextSnakeCoord(boardGameState: BoardGameState): number[] {
+  getNextSnakeCoord(boardGameState: BoardGameState): [number, number] {
     switch (this.direction) {
       case 'up':
         if (this.snakeBody.coord[1] - this.snakeSegSize[1] < 0) {
