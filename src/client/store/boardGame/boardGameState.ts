@@ -12,12 +12,18 @@ export default class BoardGameState {
   }
 
   createFood(snake: Snake) {
-    const x_coord = Math.round(
-      Math.random() * (this.dimensions[0] - snakeState.value!.snakeSegSize[0])
-    );
-    const y_coord = Math.round(
-      Math.random() * (this.dimensions[1] - snakeState.value!.snakeSegSize[1])
-    );
+    const x_coord =
+      Math.round(
+        Math.random() *
+          ((this.dimensions[0] - snakeState.value!.snakeSegSize[0]) /
+            snakeState.value!.snakeSegSize[0])
+      ) * snakeState.value!.snakeSegSize[0];
+    const y_coord =
+      Math.round(
+        Math.random() *
+          ((this.dimensions[0] - snakeState.value!.snakeSegSize[0]) /
+            snakeState.value!.snakeSegSize[1])
+      ) * snakeState.value!.snakeSegSize[1];
 
     //might move to its own method or make it a while loop.
     //if keeping recursion then need to cache coords when snake gets too big,

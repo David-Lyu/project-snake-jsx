@@ -26,6 +26,7 @@ export default class Snake {
     this.direction = direction;
     //60 fps so if you want it to move one snake segment per second divide by 60
     this.velocity = 600;
+    // this.velocity = 100;
 
     this.initSnake(snakeSize);
   }
@@ -37,6 +38,7 @@ export default class Snake {
    * @param y_coord the y-axis to add the new head
    */
   addSnakeBody(x_coord: number, y_coord: number) {
+    this.velocity -= this.velocity >= 50 ? this.snakeSegSize[0] / (5 ^ 0.5) : 0;
     if (!this.snakeBody.last) {
       const newSeg: SnakeBody = {
         next: this.snakeBody,
@@ -45,7 +47,7 @@ export default class Snake {
       };
 
       this.snakeBody = newSeg;
-      this.snakeBody.last!.head = newSeg;
+      // this.snakeBody.last!.head = newSeg;
     }
   }
 
@@ -102,10 +104,13 @@ export default class Snake {
     }
   }
 
-  getNextSnakeCoord(boardGameState: BoardGameState): [number, number] {
+  getNextSnakeCoord(
+    boardGameState: BoardGameState,
+    isFoodEaten: boolean = false
+  ): [number, number] {
     switch (this.direction) {
       case 'up':
-        if (this.snakeBody.coord[1] - this.snakeSegSize[1] < 0) {
+        if (isFoodEaten && this.snakeBody.coord[1] - this.snakeSegSize[1] < 0) {
           return [this.handleYAxisEdge(), this.snakeBody.coord[1]];
         } else {
           return [
@@ -115,8 +120,9 @@ export default class Snake {
         }
       case 'down':
         if (
+          isFoodEaten &&
           this.snakeBody.coord[1] + this.snakeSegSize[1] >
-          boardGameState.dimensions[1] - this.snakeSegSize[1]
+            boardGameState.dimensions[1] - this.snakeSegSize[1]
         ) {
           return [this.handleYAxisEdge(), this.snakeBody.coord[1]];
         } else {
@@ -126,7 +132,7 @@ export default class Snake {
           ];
         }
       case 'left':
-        if (this.snakeBody.coord[0] - this.snakeSegSize[0] < 0) {
+        if (isFoodEaten && this.snakeBody.coord[0] - this.snakeSegSize[0] < 0) {
           return [this.snakeBody.coord[0], this.handleXAxisEdge()];
         } else {
           return [
@@ -136,8 +142,9 @@ export default class Snake {
         }
       case 'right':
         if (
-          this.snakeBody.coord[0] - this.snakeSegSize[0] >
-          boardGameState.dimensions[0] - this.snakeSegSize[0]
+          isFoodEaten &&
+          this.snakeBody.coord[0] + this.snakeSegSize[0] >
+            boardGameState.dimensions[0] - this.snakeSegSize[0]
         ) {
           return [this.snakeBody.coord[0], this.handleXAxisEdge()];
         } else {
@@ -172,10 +179,10 @@ export default class Snake {
 
   handleXAxisEdge() {
     if (this.snakeBody.coord[1] <= 0) {
-      this.direction = 'up';
+      this.direction = 'down';
       return this.snakeBody.coord[1] + this.snakeSegSize[1];
     } else {
-      this.direction = 'down';
+      this.direction = 'up';
       return this.snakeBody.coord[1] - this.snakeSegSize[1];
     }
   }
