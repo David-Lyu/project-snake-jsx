@@ -48,26 +48,14 @@ export default function BoardGame(props: Props) {
     ) {
       console.log(snakeState.value?.velocity);
       canvasState.value.canAcceptKeyDown = true;
-      drawSnake(
+      setSnake(
         canvasState.value,
         ctx.current!,
         snakeState.value!,
         boardGameState.value!
       );
-      let snakeBody: SnakeBody | null = snakeState.value!.snakeBody;
-      while (snakeBody) {
-        ctx.current!.beginPath();
-        ctx.current!.fillStyle = 'green';
-        ctx.current!.fillRect(
-          snakeBody!.coord[0],
-          snakeBody!.coord[1],
-          snakeState.value!.snakeSegSize[0],
-          snakeState.value!.snakeSegSize[1]
-        );
-        snakeBody = snakeBody!.next;
-      }
 
-      ctx.current!.closePath();
+      drawSnake(ctx.current!, snakeState.value!);
       // console.log('snake coords');
       // console.log(snakeState.value?.snakeBody.coord[0]);
       // console.log(snakeState.value?.snakeBody.coord[1]);
@@ -164,7 +152,24 @@ function drawBoard(
   return ctx;
 }
 
-function drawSnake(
+function drawSnake(ctx: CanvasRenderingContext2D, snakeState: Snake) {
+  let snakeBody: SnakeBody | null = snakeState.snakeBody;
+  while (snakeBody) {
+    ctx.beginPath();
+    ctx.fillStyle = 'green';
+    ctx.fillRect(
+      snakeBody.coord[0],
+      snakeBody.coord[1],
+      snakeState.snakeSegSize[0],
+      snakeState.snakeSegSize[1]
+    );
+    snakeBody = snakeBody!.next;
+  }
+
+  ctx.closePath();
+}
+
+function setSnake(
   canvasState: CanvasState,
   ctx: CanvasRenderingContext2D,
   snakeState: Snake,
@@ -172,12 +177,18 @@ function drawSnake(
 ) {
   console.log('draw snake');
   let snakeBody: SnakeBody | null = snakeState.snakeBody;
-  snakeState.moveSnake(...snakeState.getNextSnakeCoord(boardGameState));
+  const nextCoords = snakeState.getNextSnakeCoord(boardGameState);
+  if (snakeState.checkSnakeBodyCollision(...nextCoords)) {
+    return false;
+  }
+  snakeState.moveSnake(...nextCoords);
 
   if (
     snakeBody.coord[0] === boardGameState.foodCoord[0] &&
     snakeBody.coord[1] === boardGameState.foodCoord[1]
   ) {
+    //todo: change to add tail or make tail not move when eating food ( should fix edge case where snake can go passed body)
+    //and should draw the tail on next animation
     snakeState.addSnakeBody(
       ...snakeState.getNextSnakeCoord(boardGameState, true)
     );
@@ -185,20 +196,7 @@ function drawSnake(
   }
 
   drawBoard(ctx.canvas, canvasState, boardGameState, snakeState);
-  /** When using image we want to take head logic out and make the while loop for body */
-  // while (snakeBody) {
-  //   ctx.beginPath();
-  //   ctx.fillStyle = 'green';
-  //   ctx.fillRect(
-  //     snakeBody!.coord[0],
-  //     snakeBody!.coord[1],
-  //     snakeState.snakeSegSize[0],
-  //     snakeState.snakeSegSize[1]
-  //   );
-  //   snakeBody = snakeBody!.next;
-  // }
-
-  // ctx.closePath();
+  return true;
 }
 
 /** NAMED EVENT FUNCTIONS **/
