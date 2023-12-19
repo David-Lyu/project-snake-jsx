@@ -18,5 +18,5 @@ export type SnakeBody = {
   head?: SnakeBody;
   next: SnakeBody | null;
   last: SnakeBody | null;
-  coord: number[];
+  coord: [number, number];
 };

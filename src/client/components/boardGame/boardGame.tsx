@@ -55,7 +55,7 @@ export default function BoardGame(props: Props) {
         boardGameState.value!
       );
 
-      drawSnake(ctx.current!, snakeState.value!);
+      // drawSnake(ctx.current!, snakeState.value!);
       // console.log('snake coords');
       // console.log(snakeState.value?.snakeBody.coord[0]);
       // console.log(snakeState.value?.snakeBody.coord[1]);
@@ -175,13 +175,15 @@ function setSnake(
   snakeState: Snake,
   boardGameState: BoardGameState
 ) {
-  console.log('draw snake');
   let snakeBody: SnakeBody | null = snakeState.snakeBody;
+  const lastSnakeBody: [number, number] = [...snakeBody!.last!.coord];
   const nextCoords = snakeState.getNextSnakeCoord(boardGameState);
   if (snakeState.checkSnakeBodyCollision(...nextCoords)) {
     return false;
   }
   snakeState.moveSnake(...nextCoords);
+  drawBoard(ctx.canvas, canvasState, boardGameState, snakeState);
+  drawSnake(ctx, snakeState);
 
   if (
     snakeBody.coord[0] === boardGameState.foodCoord[0] &&
@@ -189,13 +191,9 @@ function setSnake(
   ) {
     //todo: change to add tail or make tail not move when eating food ( should fix edge case where snake can go passed body)
     //and should draw the tail on next animation
-    snakeState.addSnakeBody(
-      ...snakeState.getNextSnakeCoord(boardGameState, true)
-    );
+    snakeState.addSnakeBody(...lastSnakeBody);
     boardGameState.createFood(snakeState);
   }
-
-  drawBoard(ctx.canvas, canvasState, boardGameState, snakeState);
   return true;
 }
 

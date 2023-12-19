@@ -17,7 +17,7 @@ export default class Snake {
 
   constructor(
     snakeSize: number = 3,
-    startCoords: number[] = [0, 0],
+    startCoords: [number, number] = [0, 0],
     snakeDimensions: number[] = [10, 10],
     direction: 'left' | 'right' | 'up' | 'down' = 'left'
   ) {
@@ -40,13 +40,21 @@ export default class Snake {
   addSnakeBody(x_coord: number, y_coord: number) {
     this.velocity -= this.velocity >= 50 ? this.snakeSegSize[0] / (5 ^ 0.5) : 0;
     if (!this.snakeBody.last) {
+      console.log(
+        this.snakeBody!.last!.coord[0] + this.snakeBody!.last!.coord[1]
+      );
+      console.log(x_coord, y_coord);
       const newSeg: SnakeBody = {
         next: this.snakeBody,
         last: this.snakeBody.last,
         coord: [x_coord, y_coord]
       };
 
-      this.snakeBody = newSeg;
+      this.snakeBody.last!.next = newSeg;
+      this.snakeBody.last = newSeg;
+      // console.log(
+      //   this.snakeBody!.last!.coord[0] + this.snakeBody!.last!.coord[1]
+      // );
       // this.snakeBody.last!.head = newSeg;
     }
   }
@@ -58,10 +66,12 @@ export default class Snake {
     this.snakeBody.coord = [x_coord, y_coord];
     if (nextBody) {
       nextCoord = nextBody.next;
-      //need to work on the logic
+
       while (nextBody.next) {
         nextCoord = nextBody.coord;
         nextBody.coord = prevCoord;
+
+        if (!nextBody.next) this.snakeBody.last = nextBody;
         nextBody = nextBody.next;
         prevCoord = nextCoord;
       }
@@ -93,14 +103,15 @@ export default class Snake {
     if (snakeSize > 10) {
       snakeSize = 3;
     }
-    while (snakeSize - 1) {
+    while (--snakeSize) {
       tempSnake.next = {
         next: null,
         last: null,
         coord: [tempSnake.coord[0] + this.snakeSegSize[0], tempSnake.coord[1]]
       };
+      //add the last snake
+      if (snakeSize === 1) this.snakeBody.last = tempSnake;
       tempSnake = tempSnake.next;
-      snakeSize--;
     }
   }
 
