@@ -9,7 +9,6 @@ import Snake from '../../store/snake/snake';
 import CanvasState from '../../store/canvasState/canvasState';
 import BoardGameState from '../../store/boardGame/boardGameState';
 
-//need to move out with startGameModal
 type Props = {
   setHasGameStarted: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -25,28 +24,12 @@ export default function BoardGame(props: Props) {
   const boardGameRef: React.Ref<HTMLCanvasElement> = useRef(null);
   const ctx = useRef<CanvasRenderingContext2D | null>(null);
   const cancelAnimationReturn = useRef<number>(0);
-  /**this should be ref or signal since last time and currentTime and
-   * canAcceptKeyDown are reactive, but since logic is happening in the
-   * canvas react component is not re rendering. In the future if something
-   * causes re-rendering then this needs to change
-   *
-   */
-  // const canvasState: CanvasState = {
-  //   width: 0,
-  //   height: 0,
-  //   grid: [10, 10],
-  //   canAcceptKeyDown: false,
-  //   lastTime: 0,
-  //   currentTime: 0
-  // };
 
   function animateSnake(timeStamp: number) {
-    //has to be first to cancel request Animation needs to be set before calling draw snake
     if (
       timeStamp === 0 ||
       timeStamp - canvasState.value.lastTime > snakeState.value!.velocity
     ) {
-      console.log(snakeState.value?.velocity);
       canvasState.value.canAcceptKeyDown = true;
       setSnake(
         canvasState.value,
@@ -54,13 +37,9 @@ export default function BoardGame(props: Props) {
         snakeState.value!,
         boardGameState.value!
       );
-
-      // drawSnake(ctx.current!, snakeState.value!);
-      // console.log('snake coords');
-      // console.log(snakeState.value?.snakeBody.coord[0]);
-      // console.log(snakeState.value?.snakeBody.coord[1]);
       canvasState.value.lastTime = timeStamp;
     }
+    console.log('animate Snake');
     cancelAnimationReturn.current = window.requestAnimationFrame(animateSnake);
     resetGame(
       cancelAnimationReturn.current,
@@ -82,7 +61,6 @@ export default function BoardGame(props: Props) {
 
   //useLayoutEffect to instantiate the canvas
   useLayoutEffect(() => {
-    console.log('inside layout effect');
     if (boardGameRef?.current) {
       canvasState.value.resize();
 
@@ -176,7 +154,7 @@ function setSnake(
   boardGameState: BoardGameState
 ) {
   let snakeBody: SnakeBody | null = snakeState.snakeBody;
-  const lastSnakeBody: [number, number] = [...snakeBody!.last!.coord];
+  const lastSnakeBody: [number, number] = [...snakeBody.last!.coord];
   const nextCoords = snakeState.getNextSnakeCoord(boardGameState);
   if (snakeState.checkSnakeBodyCollision(...nextCoords)) {
     return false;
@@ -189,8 +167,6 @@ function setSnake(
     snakeBody.coord[0] === boardGameState.foodCoord[0] &&
     snakeBody.coord[1] === boardGameState.foodCoord[1]
   ) {
-    //todo: change to add tail or make tail not move when eating food ( should fix edge case where snake can go passed body)
-    //and should draw the tail on next animation
     snakeState.addSnakeBody(...lastSnakeBody);
     boardGameState.createFood(snakeState);
   }

@@ -7,7 +7,6 @@ export default class BoardGameState {
   dimensions: number[] = [];
   foodCoord: number[] = [0, 0];
   constructor(dimensions = [10, 10]) {
-    console.log(dimensions);
     this.dimensions = dimensions;
   }
 

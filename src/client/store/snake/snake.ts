@@ -26,7 +26,6 @@ export default class Snake {
     this.direction = direction;
     //60 fps so if you want it to move one snake segment per second divide by 60
     this.velocity = 600;
-    // this.velocity = 100;
 
     this.initSnake(snakeSize);
   }
@@ -39,23 +38,15 @@ export default class Snake {
    */
   addSnakeBody(x_coord: number, y_coord: number) {
     this.velocity -= this.velocity >= 50 ? this.snakeSegSize[0] / (5 ^ 0.5) : 0;
-    if (!this.snakeBody.last) {
-      console.log(
-        this.snakeBody!.last!.coord[0] + this.snakeBody!.last!.coord[1]
-      );
-      console.log(x_coord, y_coord);
+    if (this.snakeBody.last) {
       const newSeg: SnakeBody = {
-        next: this.snakeBody,
-        last: this.snakeBody.last,
+        next: null,
+        last: null,
         coord: [x_coord, y_coord]
       };
 
-      this.snakeBody.last!.next = newSeg;
+      this.snakeBody.last.next = newSeg;
       this.snakeBody.last = newSeg;
-      // console.log(
-      //   this.snakeBody!.last!.coord[0] + this.snakeBody!.last!.coord[1]
-      // );
-      // this.snakeBody.last!.head = newSeg;
     }
   }
 
@@ -71,11 +62,11 @@ export default class Snake {
         nextCoord = nextBody.coord;
         nextBody.coord = prevCoord;
 
-        if (!nextBody.next) this.snakeBody.last = nextBody;
         nextBody = nextBody.next;
         prevCoord = nextCoord;
       }
       nextBody.coord = prevCoord;
+      this.snakeBody.last = nextBody;
     }
   }
 
@@ -89,6 +80,7 @@ export default class Snake {
   checkSnakeBodyCollision(x_coord: number, y_coord: number): boolean {
     let nextBody = this.snakeBody.next;
     while (nextBody) {
+      console.log('checkSnakeBody');
       if (nextBody.coord[0] === x_coord && nextBody.coord[1] === y_coord) {
         return true;
       }
