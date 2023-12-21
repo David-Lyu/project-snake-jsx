@@ -113,49 +113,25 @@ export default class Snake {
   ): [number, number] {
     switch (this.direction) {
       case 'up':
-        if (isFoodEaten && this.snakeBody.coord[1] - this.snakeSegSize[1] < 0) {
-          return [this.handleYAxisEdge(), this.snakeBody.coord[1]];
-        } else {
-          return [
-            this.snakeBody.coord[0],
-            this.snakeBody.coord[1] - this.snakeSegSize[1]
-          ];
-        }
+        return [
+          this.snakeBody.coord[0],
+          this.snakeBody.coord[1] - this.snakeSegSize[1]
+        ];
       case 'down':
-        if (
-          isFoodEaten &&
-          this.snakeBody.coord[1] + this.snakeSegSize[1] >
-            boardGameState.dimensions[1] - this.snakeSegSize[1]
-        ) {
-          return [this.handleYAxisEdge(), this.snakeBody.coord[1]];
-        } else {
-          return [
-            this.snakeBody.coord[0],
-            this.snakeBody.coord[1] + this.snakeSegSize[1]
-          ];
-        }
+        return [
+          this.snakeBody.coord[0],
+          this.snakeBody.coord[1] + this.snakeSegSize[1]
+        ];
       case 'left':
-        if (isFoodEaten && this.snakeBody.coord[0] - this.snakeSegSize[0] < 0) {
-          return [this.snakeBody.coord[0], this.handleXAxisEdge()];
-        } else {
-          return [
-            this.snakeBody.coord[0] - this.snakeSegSize[0],
-            this.snakeBody.coord[1]
-          ];
-        }
+        return [
+          this.snakeBody.coord[0] - this.snakeSegSize[0],
+          this.snakeBody.coord[1]
+        ];
       case 'right':
-        if (
-          isFoodEaten &&
-          this.snakeBody.coord[0] + this.snakeSegSize[0] >
-            boardGameState.dimensions[0] - this.snakeSegSize[0]
-        ) {
-          return [this.snakeBody.coord[0], this.handleXAxisEdge()];
-        } else {
-          return [
-            this.snakeBody.coord[0] + this.snakeSegSize[0],
-            this.snakeBody.coord[1]
-          ];
-        }
+        return [
+          this.snakeBody.coord[0] + this.snakeSegSize[0],
+          this.snakeBody.coord[1]
+        ];
     }
   }
 
