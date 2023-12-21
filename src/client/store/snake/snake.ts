@@ -1,8 +1,6 @@
 import { Signal, signal } from '@preact/signals';
 import { SnakeBody } from '../../types/boardgame';
-import BoardGameState from '../boardGame/boardGameState';
-
-export const snakeState: Signal<Snake | null> = signal(null);
+import { Dimension } from '../../types/types';
 
 export default class Snake {
   snakeBody: SnakeBody = {
@@ -11,14 +9,14 @@ export default class Snake {
     coord: [0, 0]
   };
 
-  snakeSegSize = [10, 10];
+  snakeSegSize: Dimension = [10, 10];
   direction: 'left' | 'right' | 'up' | 'down' = 'left';
   velocity: number = 0;
 
   constructor(
     snakeSize: number = 3,
-    startCoords: [number, number] = [0, 0],
-    snakeDimensions: number[] = [10, 10],
+    startCoords: Dimension = [0, 0],
+    snakeDimensions: Dimension = [10, 10],
     direction: 'left' | 'right' | 'up' | 'down' = 'left'
   ) {
     this.snakeBody.coord = startCoords;
@@ -107,10 +105,7 @@ export default class Snake {
     }
   }
 
-  getNextSnakeCoord(
-    boardGameState: BoardGameState,
-    isFoodEaten: boolean = false
-  ): [number, number] {
+  getNextSnakeCoord(): Dimension {
     switch (this.direction) {
       case 'up':
         return [
@@ -144,25 +139,6 @@ export default class Snake {
 
     this.snakeSegSize = [0, 0];
   }
-
-  //helper functions
-  handleYAxisEdge() {
-    if (this.snakeBody.coord[0] <= 0) {
-      this.direction = 'right';
-      return this.snakeBody.coord[0] + this.snakeSegSize[0];
-    } else {
-      this.direction = 'left';
-      return this.snakeBody.coord[0] - this.snakeSegSize[0];
-    }
-  }
-
-  handleXAxisEdge() {
-    if (this.snakeBody.coord[1] <= 0) {
-      this.direction = 'down';
-      return this.snakeBody.coord[1] + this.snakeSegSize[1];
-    } else {
-      this.direction = 'up';
-      return this.snakeBody.coord[1] - this.snakeSegSize[1];
-    }
-  }
 }
+
+export const snakeState: Signal<Snake> = signal(new Snake());

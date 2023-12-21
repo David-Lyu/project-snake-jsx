@@ -7,8 +7,8 @@ import CanvasState from '../store/canvasState/canvasState';
 //Store (is it needed?)
 export type Store = {
   user: Signal<User | null>;
-  snake: Signal<Snake | null>;
-  boardGame: Signal<BoardGame | null>;
+  snake: Signal<Snake>;
+  boardGame: Signal<BoardGame>;
   canvasState: Signal<CanvasState>;
 };
 
@@ -19,6 +19,8 @@ export type User = {
   password?: string | null;
   highScore: number;
 };
+
+export type Dimension = [number, number];
 
 type ScoreBoard = {
   scores: User[];

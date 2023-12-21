@@ -35,7 +35,7 @@ export default function BoardGame(props: Props) {
         canvasState.value,
         ctx.current!,
         snakeState.value!,
-        boardGameState.value!
+        boardGameState.value
       );
       canvasState.value.lastTime = timeStamp;
     }
@@ -146,7 +146,7 @@ function drawSnake(ctx: CanvasRenderingContext2D, snakeState: Snake) {
 
   ctx.closePath();
 }
-
+//split this out
 function setSnake(
   canvasState: CanvasState,
   ctx: CanvasRenderingContext2D,
@@ -155,7 +155,7 @@ function setSnake(
 ) {
   let snakeBody: SnakeBody | null = snakeState.snakeBody;
   const lastSnakeBody: [number, number] = [...snakeBody.last!.coord];
-  const nextCoords = snakeState.getNextSnakeCoord(boardGameState);
+  const nextCoords = snakeState.getNextSnakeCoord();
   if (snakeState.checkSnakeBodyCollision(...nextCoords)) {
     return false;
   }

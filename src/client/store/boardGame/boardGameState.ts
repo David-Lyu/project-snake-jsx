@@ -1,12 +1,12 @@
 import { Signal, signal } from '@preact/signals';
 import Snake, { snakeState } from '../snake/snake';
-
-export const boardGameState: Signal<BoardGameState | null> = signal(null);
+import { Dimension } from '../../types/types';
 
 export default class BoardGameState {
-  dimensions: number[] = [];
-  foodCoord: number[] = [0, 0];
-  constructor(dimensions = [10, 10]) {
+  //create x,y cooord type
+  dimensions: Dimension = [0, 0];
+  foodCoord: Dimension = [0, 0];
+  constructor(dimensions: Dimension = [10, 10]) {
     this.dimensions = dimensions;
   }
 
@@ -39,3 +39,7 @@ export default class BoardGameState {
     }
   }
 }
+
+export const boardGameState: Signal<BoardGameState> = signal(
+  new BoardGameState()
+);
