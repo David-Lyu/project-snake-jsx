@@ -2,6 +2,10 @@
   --game-background-color: rgb(165, 165, 165);
 }
 
+body {
+  margin: 0;
+}
+
 .container {
   max-width: 1440px;
   width: 100%;
