@@ -6,6 +6,7 @@ export default class BoardGameState {
   //create x,y cooord type
   dimensions: Dimension = [0, 0];
   foodCoord: Dimension = [0, 0];
+  snakePoints: number = 50;
   constructor(dimensions: Dimension = [10, 10]) {
     this.dimensions = dimensions;
   }

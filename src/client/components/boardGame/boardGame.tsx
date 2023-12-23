@@ -38,7 +38,8 @@ export default function BoardGame(props: Props) {
           canvasState.value,
           ctx.current!,
           snakeState.value!,
-          boardGameState.value
+          boardGameState.value,
+          scoreboard
         )
       ) {
         return resetGame(
@@ -50,7 +51,10 @@ export default function BoardGame(props: Props) {
       canvasState.value.lastTime = timeStamp;
     }
     cancelAnimationReturn.current = window.requestAnimationFrame(animateSnake);
-    //check board collision might move to board State
+    /**
+     * The reason why the upper limit is the max width is because the coords start from left
+     * and then fill to the right. Same for the height
+     */
     if (
       snakeState.value.snakeBody.coord[0] <=
         -snakeState.value.snakeSegSize[0] ||
@@ -169,7 +173,8 @@ function setSnake(
   canvasState: CanvasState,
   ctx: CanvasRenderingContext2D,
   snakeState: Snake,
-  boardGameState: BoardGameState
+  boardGameState: BoardGameState,
+  scoreboard: typeof scoreboardType
 ) {
   let snakeBody: SnakeBody | null = snakeState.snakeBody;
   const lastSnakeBody: [number, number] = [...snakeBody.last!.coord];
@@ -185,6 +190,7 @@ function setSnake(
     snakeBody.coord[0] === boardGameState.foodCoord[0] &&
     snakeBody.coord[1] === boardGameState.foodCoord[1]
   ) {
+    scoreboard.score.value += boardGameState.snakePoints;
     snakeState.addSnakeBody(...lastSnakeBody);
     boardGameState.createFood(snakeState);
   }
@@ -231,14 +237,11 @@ function resetGame(
   setHasGameStarted: React.Dispatch<React.SetStateAction<boolean>>,
   scoreboard: typeof scoreboardType
 ) {
-  /**
-   * The reason why the upper limit is the max width is because the coords start from left
-   * and then fill to the right. Same for the height
-   */
-
   window.cancelAnimationFrame(cancelAnimation);
   clearInterval(scoreboard.intervalId);
   scoreboard.intervalId = 0;
+  //need to use local storage set and grab high score
+  scoreboard.score.value = 0;
   //make modal and play again?
   setHasGameStarted(false);
 }
