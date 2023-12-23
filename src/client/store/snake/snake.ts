@@ -78,7 +78,6 @@ export default class Snake {
   checkSnakeBodyCollision(x_coord: number, y_coord: number): boolean {
     let nextBody = this.snakeBody.next;
     while (nextBody) {
-      console.log('checkSnakeBody');
       if (nextBody.coord[0] === x_coord && nextBody.coord[1] === y_coord) {
         return true;
       }

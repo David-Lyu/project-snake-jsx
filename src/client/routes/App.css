@@ -48,6 +48,10 @@
   background-color: var(--game-background-color);
 }
 
+.snake-game > .container {
+  flex-direction: column;
+}
+
 /* .blur {
   background-color: rgba(0, 0, 0, 0.1);
 } */

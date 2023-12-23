@@ -3,6 +3,7 @@ import { Signal } from '@preact/signals';
 import Snake from '../store/snake/snake';
 import BoardGame from '../store/boardGame/boardGameState';
 import CanvasState from '../store/canvasState/canvasState';
+import scoreboard from '../store/scoreboard/scoreboard';
 
 //Store (is it needed?)
 export type Store = {
@@ -10,6 +11,7 @@ export type Store = {
   snake: Signal<Snake>;
   boardGame: Signal<BoardGame>;
   canvasState: Signal<CanvasState>;
+  scoreboard: typeof scoreboard;
 };
 
 // Start Page

@@ -8,6 +8,7 @@ import { AppState } from '../../main';
 import Snake from '../../store/snake/snake';
 import CanvasState from '../../store/canvasState/canvasState';
 import BoardGameState from '../../store/boardGame/boardGameState';
+import scoreboardType from '../../store/scoreboard/scoreboard';
 
 type Props = {
   setHasGameStarted: React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,7 +19,8 @@ export default function BoardGame(props: Props) {
   const {
     snake: snakeState,
     boardGame: boardGameState,
-    canvasState
+    canvasState,
+    scoreboard
   } = useContext(AppState);
   const [canvasSize, setCanvasSize] = useState<number[]>([0, 0]);
   const boardGameRef: React.Ref<HTMLCanvasElement> = useRef(null);
@@ -41,14 +43,14 @@ export default function BoardGame(props: Props) {
       ) {
         return resetGame(
           cancelAnimationReturn.current,
-          snakeState.value!,
-          canvasState.value,
-          props.setHasGameStarted
+          props.setHasGameStarted,
+          scoreboard
         );
       }
       canvasState.value.lastTime = timeStamp;
     }
     cancelAnimationReturn.current = window.requestAnimationFrame(animateSnake);
+    //check board collision might move to board State
     if (
       snakeState.value.snakeBody.coord[0] <=
         -snakeState.value.snakeSegSize[0] ||
@@ -59,9 +61,8 @@ export default function BoardGame(props: Props) {
     ) {
       resetGame(
         cancelAnimationReturn.current,
-        snakeState.value!,
-        canvasState.value,
-        props.setHasGameStarted
+        props.setHasGameStarted,
+        scoreboard
       );
     }
   }
@@ -227,17 +228,17 @@ function onKeyDown(
 
 function resetGame(
   cancelAnimation: number,
-  snakeState: Snake,
-  canvasState: CanvasState,
-  setHasGameStarted: React.Dispatch<React.SetStateAction<boolean>>
+  setHasGameStarted: React.Dispatch<React.SetStateAction<boolean>>,
+  scoreboard: typeof scoreboardType
 ) {
-  console.log('end game');
   /**
    * The reason why the upper limit is the max width is because the coords start from left
    * and then fill to the right. Same for the height
    */
 
   window.cancelAnimationFrame(cancelAnimation);
+  clearInterval(scoreboard.intervalId);
+  scoreboard.intervalId = 0;
   //make modal and play again?
   setHasGameStarted(false);
 }

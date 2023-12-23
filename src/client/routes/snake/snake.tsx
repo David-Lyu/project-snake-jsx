@@ -1,15 +1,8 @@
 import { Link } from 'react-router-dom';
 import BoardGame from '../../components/boardGame/boardGame';
-import { Signal, effect, signal } from '@preact/signals';
-import {
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState
-} from 'react';
+import { useState } from 'react';
 import StartGameModal from '../../components/startGameModal/startGameModal';
-import { AppState } from '../../main';
+import Scoreboard from '../../components/scoreboard/scoreboard';
 
 export default function Snake() {
   //honestly better to refactor and just use useState
@@ -17,10 +10,8 @@ export default function Snake() {
 
   return (
     <div className="snake-game">
-      <div className={`container ${!hasGameStarted ? 'blur' : ''}`}>
-        {/* Placeholder for score board */}
-        <div className="score"></div>
-        {/* <BoardGame hasGameStarted={hasGameStarted}></BoardGame> */}
+      <div className={`container`}>
+        <Scoreboard hasGameStarted={hasGameStarted} />
         {!hasGameStarted ? (
           <StartGameModal setHasGameStarted={setHasGameStarted} />
         ) : (
