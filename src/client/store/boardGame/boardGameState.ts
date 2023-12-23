@@ -35,7 +35,6 @@ export default class BoardGameState {
       this.createFood(snake);
     } else {
       this.foodCoord = [x_coord, y_coord];
-      console.log(this.foodCoord);
     }
   }
 }

@@ -31,22 +31,39 @@ export default function BoardGame(props: Props) {
       timeStamp - canvasState.value.lastTime > snakeState.value!.velocity
     ) {
       canvasState.value.canAcceptKeyDown = true;
-      setSnake(
-        canvasState.value,
-        ctx.current!,
-        snakeState.value!,
-        boardGameState.value
-      );
+      if (
+        !setSnake(
+          canvasState.value,
+          ctx.current!,
+          snakeState.value!,
+          boardGameState.value
+        )
+      ) {
+        return resetGame(
+          cancelAnimationReturn.current,
+          snakeState.value!,
+          canvasState.value,
+          props.setHasGameStarted
+        );
+      }
       canvasState.value.lastTime = timeStamp;
     }
-    console.log('animate Snake');
     cancelAnimationReturn.current = window.requestAnimationFrame(animateSnake);
-    resetGame(
-      cancelAnimationReturn.current,
-      snakeState.value!,
-      canvasState.value,
-      props.setHasGameStarted
-    );
+    if (
+      snakeState.value.snakeBody.coord[0] <=
+        -snakeState.value.snakeSegSize[0] ||
+      snakeState.value.snakeBody.coord[0] >= canvasState.value.width ||
+      snakeState.value.snakeBody.coord[1] <=
+        -snakeState.value.snakeSegSize[1] ||
+      snakeState.value.snakeBody.coord[1] >= canvasState.value.height
+    ) {
+      resetGame(
+        cancelAnimationReturn.current,
+        snakeState.value!,
+        canvasState.value,
+        props.setHasGameStarted
+      );
+    }
   }
 
   function handleUserInput(e: KeyboardEvent) {
@@ -214,18 +231,13 @@ function resetGame(
   canvasState: CanvasState,
   setHasGameStarted: React.Dispatch<React.SetStateAction<boolean>>
 ) {
+  console.log('end game');
   /**
    * The reason why the upper limit is the max width is because the coords start from left
    * and then fill to the right. Same for the height
    */
-  if (
-    snakeState.snakeBody.coord[0] <= -snakeState.snakeSegSize[0] ||
-    snakeState.snakeBody.coord[0] >= canvasState.width ||
-    snakeState.snakeBody.coord[1] <= -snakeState.snakeSegSize[1] ||
-    snakeState.snakeBody.coord[1] >= canvasState.height
-  ) {
-    window.cancelAnimationFrame(cancelAnimation);
-    //make modal and play again?
-    setHasGameStarted(false);
-  }
+
+  window.cancelAnimationFrame(cancelAnimation);
+  //make modal and play again?
+  setHasGameStarted(false);
 }
