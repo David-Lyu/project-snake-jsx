@@ -10,6 +10,10 @@ export default function HomePage() {
         <Link to="/play">Play Game</Link>
         <div className="scoreboard" id="scoreboard-start-screen"></div>
       </div>
+      <section>
+        Disclaimer: This is used only for demonstration purposes and is still in
+        progress.
+      </section>
     </div>
   );
 }
