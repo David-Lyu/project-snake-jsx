@@ -1,18 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useContext, useLayoutEffect, useRef, useState } from 'react';
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState
+} from 'react';
 import { SnakeBody } from '../../types/boardgame';
-import GameBoard, {
-  boardGameState
-} from '../../store/boardGame/boardGameState';
 import { AppState } from '../../main';
 import Snake from '../../store/snake/snake';
 import CanvasState from '../../store/canvasState/canvasState';
 import BoardGameState from '../../store/boardGame/boardGameState';
-import scoreboardType from '../../store/scoreboard/scoreboard';
+import ScoreboardType from '../../store/scoreboard/scoreboard';
+import Joystick from '../joystick/Joystick';
 
 type Props = {
   setHasGameStarted: React.Dispatch<React.SetStateAction<boolean>>;
 };
+
+//Used in joystick need to refactor
+type Direction = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
 
 //Todo: Need to open input when user is in mobile
 export default function BoardGame(props: Props) {
@@ -23,6 +30,7 @@ export default function BoardGame(props: Props) {
     scoreboard
   } = useContext(AppState);
   const [canvasSize, setCanvasSize] = useState<number[]>([0, 0]);
+  const [direction, setDirection] = useState<Direction>('ArrowLeft');
   const boardGameRef: React.Ref<HTMLCanvasElement> = useRef(null);
   const ctx = useRef<CanvasRenderingContext2D | null>(null);
   const cancelAnimationReturn = useRef<number>(0);
@@ -117,16 +125,24 @@ export default function BoardGame(props: Props) {
     }
   }, [boardGameRef]);
 
+  //need to refactor handleUserInput more elegantly
+  useEffect(() => {
+    const pseudoEvent = { key: direction };
+    handleUserInput(pseudoEvent as KeyboardEvent);
+  }, [direction]);
+
   return (
     <div>
       <canvas ref={boardGameRef} width={canvasSize[0]} height={canvasSize[1]}>
         No Game Available
       </canvas>
+      <Joystick setDirection={setDirection} />
     </div>
   );
 }
 
 /** HELPER FUNCTIONS **/
+
 function drawBoard(
   canvas: HTMLCanvasElement,
   canvasState: CanvasState,
@@ -174,7 +190,7 @@ function setSnake(
   ctx: CanvasRenderingContext2D,
   snakeState: Snake,
   boardGameState: BoardGameState,
-  scoreboard: typeof scoreboardType
+  scoreboard: typeof ScoreboardType
 ) {
   let snakeBody: SnakeBody | null = snakeState.snakeBody;
   const lastSnakeBody: [number, number] = [...snakeBody.last!.coord];
@@ -235,7 +251,7 @@ function onKeyDown(
 function resetGame(
   cancelAnimation: number,
   setHasGameStarted: React.Dispatch<React.SetStateAction<boolean>>,
-  scoreboard: typeof scoreboardType
+  scoreboard: typeof ScoreboardType
 ) {
   window.cancelAnimationFrame(cancelAnimation);
   clearInterval(scoreboard.intervalId);
