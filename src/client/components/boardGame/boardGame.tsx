@@ -8,10 +8,12 @@ import {
 } from 'react';
 import { SnakeBody } from '../../types/boardgame';
 import { AppState } from '../../main';
-import Snake from '../../store/snake/snake';
-import CanvasState from '../../store/canvasState/canvasState';
-import BoardGameState from '../../store/boardGame/boardGameState';
-import ScoreboardType from '../../store/scoreboard/scoreboard';
+import Snake, { snakeState } from '../../store/snake/snake';
+import CanvasState, { canvasState } from '../../store/canvasState/canvasState';
+import BoardGameState, {
+  boardGameState
+} from '../../store/boardGame/boardGameState';
+import scoreboardState from '../../store/scoreboard/scoreboard';
 import Joystick from '../joystick/Joystick';
 
 type Props = {
@@ -26,14 +28,12 @@ export default function BoardGame(props: Props) {
   const {
     snake: snakeState,
     boardGame: boardGameState,
-    canvasState,
-    scoreboard
+    canvasState
   } = useContext(AppState);
   const [canvasSize, setCanvasSize] = useState<number[]>([0, 0]);
   const [direction, setDirection] = useState<Direction>('ArrowLeft');
   const boardGameRef: React.Ref<HTMLCanvasElement> = useRef(null);
   const ctx = useRef<CanvasRenderingContext2D | null>(null);
-  const cancelAnimationReturn = useRef<number>(0);
 
   function animateSnake(timeStamp: number) {
     if (
@@ -41,24 +41,17 @@ export default function BoardGame(props: Props) {
       timeStamp - canvasState.value.lastTime > snakeState.value!.velocity
     ) {
       canvasState.value.canAcceptKeyDown = true;
-      if (
-        !setSnake(
-          canvasState.value,
-          ctx.current!,
-          snakeState.value!,
-          boardGameState.value,
-          scoreboard
-        )
-      ) {
+      if (!setSnake(ctx.current!)) {
         return resetGame(
-          cancelAnimationReturn.current,
-          props.setHasGameStarted,
-          scoreboard
+          canvasState.value.cancelAnimationFrame,
+          props.setHasGameStarted
         );
       }
       canvasState.value.lastTime = timeStamp;
     }
-    cancelAnimationReturn.current = window.requestAnimationFrame(animateSnake);
+    //move this to state
+    canvasState.value.cancelAnimationFrame =
+      window.requestAnimationFrame(animateSnake);
     /**
      * The reason why the upper limit is the max width is because the coords start from left
      * and then fill to the right. Same for the height
@@ -72,15 +65,16 @@ export default function BoardGame(props: Props) {
       snakeState.value.snakeBody.coord[1] >= canvasState.value.height
     ) {
       resetGame(
-        cancelAnimationReturn.current,
-        props.setHasGameStarted,
-        scoreboard
+        canvasState.value.cancelAnimationFrame,
+        props.setHasGameStarted
       );
     }
   }
 
   function handleUserInput(e: KeyboardEvent) {
-    e.preventDefault();
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
     if (
       canvasState.value.currentTime - canvasState.value.lastTime <=
       snakeState.value!.velocity
@@ -89,7 +83,7 @@ export default function BoardGame(props: Props) {
     }
   }
 
-  //useLayoutEffect to instantiate the canvas
+  //useLayoutEffect to instantiate the canvas //need to pass in hasGameStarted, and then draw.
   useLayoutEffect(() => {
     if (boardGameRef?.current) {
       canvasState.value.resize();
@@ -108,18 +102,13 @@ export default function BoardGame(props: Props) {
       boardGameState.value?.createFood(snakeState.value!);
       //make this x,y coords
       setCanvasSize([canvasState.value.width, canvasState.value.height]);
-      ctx.current = drawBoard(
-        boardGameRef.current,
-        canvasState.value,
-        boardGameState.value!,
-        snakeState.value!
-      );
+      ctx.current = drawBoard(boardGameRef.current);
 
       animateSnake(0);
       window.addEventListener('keydown', handleUserInput);
 
       return () => {
-        window.cancelAnimationFrame(cancelAnimationReturn.current);
+        window.cancelAnimationFrame(canvasState.value.cancelAnimationFrame);
         window.removeEventListener('keydown', handleUserInput);
       };
     }
@@ -128,6 +117,7 @@ export default function BoardGame(props: Props) {
   //need to refactor handleUserInput more elegantly
   useEffect(() => {
     const pseudoEvent = { key: direction };
+    console.log(pseudoEvent);
     handleUserInput(pseudoEvent as KeyboardEvent);
   }, [direction]);
 
@@ -143,41 +133,36 @@ export default function BoardGame(props: Props) {
 
 /** HELPER FUNCTIONS **/
 
-function drawBoard(
-  canvas: HTMLCanvasElement,
-  canvasState: CanvasState,
-  boardGameState: BoardGameState | null,
-  snakeState: Snake
-) {
+function drawBoard(canvas: HTMLCanvasElement) {
   const ctx = canvas.getContext('2d');
   if (ctx) {
     ctx.beginPath();
     ctx.fillStyle = 'rgb(165,165,165)';
-    ctx.fillRect(0, 0, canvasState.width, canvasState.height);
+    ctx.fillRect(0, 0, canvasState.value.width, canvasState.value.height);
     ctx.closePath();
 
     ctx.beginPath();
     ctx.fillStyle = 'rgb(255,0,0)';
     ctx.fillRect(
-      boardGameState!.foodCoord[0],
-      boardGameState!.foodCoord[1],
-      snakeState.snakeSegSize[0],
-      snakeState.snakeSegSize[1]
+      boardGameState.value.foodCoord[0],
+      boardGameState.value.foodCoord[1],
+      snakeState.value.snakeSegSize[0],
+      snakeState.value.snakeSegSize[1]
     );
   }
   return ctx;
 }
 
-function drawSnake(ctx: CanvasRenderingContext2D, snakeState: Snake) {
-  let snakeBody: SnakeBody | null = snakeState.snakeBody;
+function drawSnake(ctx: CanvasRenderingContext2D) {
+  let snakeBody: SnakeBody | null = snakeState.value.snakeBody;
   while (snakeBody) {
     ctx.beginPath();
     ctx.fillStyle = 'green';
     ctx.fillRect(
       snakeBody.coord[0],
       snakeBody.coord[1],
-      snakeState.snakeSegSize[0],
-      snakeState.snakeSegSize[1]
+      snakeState.value.snakeSegSize[0],
+      snakeState.value.snakeSegSize[1]
     );
     snakeBody = snakeBody!.next;
   }
@@ -185,30 +170,24 @@ function drawSnake(ctx: CanvasRenderingContext2D, snakeState: Snake) {
   ctx.closePath();
 }
 //split this out
-function setSnake(
-  canvasState: CanvasState,
-  ctx: CanvasRenderingContext2D,
-  snakeState: Snake,
-  boardGameState: BoardGameState,
-  scoreboard: typeof ScoreboardType
-) {
-  let snakeBody: SnakeBody | null = snakeState.snakeBody;
+function setSnake(ctx: CanvasRenderingContext2D) {
+  let snakeBody: SnakeBody | null = snakeState.value.snakeBody;
   const lastSnakeBody: [number, number] = [...snakeBody.last!.coord];
-  const nextCoords = snakeState.getNextSnakeCoord();
-  if (snakeState.checkSnakeBodyCollision(...nextCoords)) {
+  const nextCoords = snakeState.value.getNextSnakeCoord();
+  if (snakeState.value.checkSnakeBodyCollision(...nextCoords)) {
     return false;
   }
-  snakeState.moveSnake(...nextCoords);
-  drawBoard(ctx.canvas, canvasState, boardGameState, snakeState);
-  drawSnake(ctx, snakeState);
+  snakeState.value.moveSnake(...nextCoords);
+  drawBoard(ctx.canvas);
+  drawSnake(ctx);
 
   if (
-    snakeBody.coord[0] === boardGameState.foodCoord[0] &&
-    snakeBody.coord[1] === boardGameState.foodCoord[1]
+    snakeBody.coord[0] === boardGameState.value.foodCoord[0] &&
+    snakeBody.coord[1] === boardGameState.value.foodCoord[1]
   ) {
-    scoreboard.score.value += boardGameState.snakePoints;
-    snakeState.addSnakeBody(...lastSnakeBody);
-    boardGameState.createFood(snakeState);
+    scoreboardState.score.value += boardGameState.value.snakePoints;
+    snakeState.value.addSnakeBody(...lastSnakeBody);
+    boardGameState.value.createFood(snakeState.value);
   }
   return true;
 }
@@ -250,14 +229,13 @@ function onKeyDown(
 
 function resetGame(
   cancelAnimation: number,
-  setHasGameStarted: React.Dispatch<React.SetStateAction<boolean>>,
-  scoreboard: typeof ScoreboardType
+  setHasGameStarted: React.Dispatch<React.SetStateAction<boolean>>
 ) {
   window.cancelAnimationFrame(cancelAnimation);
-  clearInterval(scoreboard.intervalId);
-  scoreboard.intervalId = 0;
+  clearInterval(scoreboardState.intervalId);
+  scoreboardState.intervalId = 0;
   //need to use local storage set and grab high score
-  scoreboard.score.value = 0;
+  scoreboardState.score.value = 0;
   //make modal and play again?
   setHasGameStarted(false);
 }

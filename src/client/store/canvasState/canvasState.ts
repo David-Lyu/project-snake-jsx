@@ -7,6 +7,7 @@ export default class CanvasState {
   canAcceptKeyDown: boolean = false;
   lastTime: number = 0;
   currentTime: number = 0;
+  cancelAnimationFrame = 0;
   constructor() {}
 
   resize() {
