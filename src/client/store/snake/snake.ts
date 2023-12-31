@@ -35,7 +35,7 @@ export default class Snake {
    * @param y_coord the y-axis to add the new head
    */
   addSnakeBody(x_coord: number, y_coord: number) {
-    this.velocity -= this.velocity >= 50 ? this.snakeSegSize[0] / (5 ^ 0.5) : 0;
+    this.velocity -= this.velocity >= 50 ? this.snakeSegSize[0] : 0;
     if (this.snakeBody.last) {
       const newSeg: SnakeBody = {
         next: null,

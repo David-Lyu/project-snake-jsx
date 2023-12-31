@@ -25,7 +25,9 @@ export default function Snake() {
           <div className="instruction">
             <p>
               <b>Instruction: </b>
-              Please use the keys 'w', 'a', 's', 'd' to move the mouse
+              Please use the keys 'w', 'a', 's', 'd' to move the mouse or if
+              using mobile use the controller pad located on the bottom right of
+              the game board.
             </p>
           </div>
           <div className="goal">
