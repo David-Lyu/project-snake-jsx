@@ -59,3 +59,58 @@ body {
 /* .blur {
   background-color: rgba(0, 0, 0, 0.1);
 } */
+
+.boardgame-container {
+  position: relative;
+}
+
+.joystick-container {
+  position: absolute;
+  bottom: 10px;
+  right: 5px;
+  background-color: rgba(239, 239, 240, 0.3);
+  /* position: relative; */
+  width: 100px;
+  height: 100px;
+  border-radius: 200px;
+}
+
+.joystick-container > button {
+  all: unset;
+  position: absolute;
+  font-size: 0;
+}
+
+.joystick-container > button > svg {
+  fill: rgba(0, 0, 0, 0.2);
+  width: 30px;
+  height: 30px;
+}
+
+.joystick-container > button:active > svg {
+  fill: rgba(255, 255, 255, 0.4);
+}
+
+.joystick-container > .joy-up {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.joystick-container > .joy-left {
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+.joystick-container > .joy-right {
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+
+.joystick-container > .joy-down {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}

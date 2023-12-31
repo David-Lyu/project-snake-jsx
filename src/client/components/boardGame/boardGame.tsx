@@ -117,17 +117,16 @@ export default function BoardGame(props: Props) {
   //need to refactor handleUserInput more elegantly
   useEffect(() => {
     const pseudoEvent = { key: direction };
-    console.log(pseudoEvent);
     handleUserInput(pseudoEvent as KeyboardEvent);
   }, [direction]);
 
   return (
-    <div>
+    <section className="boardgame-container">
       <canvas ref={boardGameRef} width={canvasSize[0]} height={canvasSize[1]}>
         No Game Available
       </canvas>
       <Joystick setDirection={setDirection} />
-    </div>
+    </section>
   );
 }
 
