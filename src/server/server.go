@@ -1,15 +1,19 @@
 package main
 
 import (
-    "fmt"
-    "log"
-    "net/http"
+	"fmt"
+	"log"
+	"net/http"
 )
 
 func main() {
 	http.HandleFunc("/api/login", func(w http.ResponseWriter, r *http.Request){
 		//should be post method, and uses a username and password to login.
 		// create session?
+		if(http.MethodPost != "POST") {
+			w.Header().Set("status",http.StatusMethodNotAllowed());
+		}
+
 		fmt.Fprintf(w, "Hello!")
 	})
 
