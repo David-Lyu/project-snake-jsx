@@ -10,8 +10,10 @@ func main() {
 	http.HandleFunc("/api/login", func(w http.ResponseWriter, r *http.Request){
 		//should be post method, and uses a username and password to login.
 		// create session?
-		if(http.MethodPost != "POST") {
-			w.Header().Set("status",http.StatusMethodNotAllowed());
+
+		if(r.Method!= "POST") {
+			//do somthing
+			return;
 		}
 
 		fmt.Fprintf(w, "Hello!")
