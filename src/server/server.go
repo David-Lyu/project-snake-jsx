@@ -10,13 +10,16 @@ func main() {
 	http.HandleFunc("/api/login", func(w http.ResponseWriter, r *http.Request){
 		//should be post method, and uses a username and password to login.
 		// create session?
-
 		if(r.Method!= "POST") {
 			//do somthing
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			fmt.Fprint(w,"Method not allowed")
+			r.Context().Done()
 			return;
 		}
 
 		fmt.Fprintf(w, "Hello!")
+
 	})
 
 	http.HandleFunc("/api/logout", func(w http.ResponseWriter, r *http.Request){
@@ -25,7 +28,7 @@ func main() {
 		fmt.Fprintf(w, "Hello!")
 	})
 
-	http.HandleFunc("/api/high-score", func(w http.ResponseWriter, r *http.Request){
+	http.HandleFunc("/api/score", func(w http.ResponseWriter, r *http.Request){
 		// should grab the first 10 high scores
 		fmt.Fprintf(w, "Hello!")
 	})
