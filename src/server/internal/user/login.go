@@ -1,4 +1,4 @@
-package snakeLogin
+package snakeUser
 
 func login() {
 
