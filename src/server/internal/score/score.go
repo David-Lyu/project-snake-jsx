@@ -1,0 +1,3 @@
+package snakeScore
+
+func score() {}

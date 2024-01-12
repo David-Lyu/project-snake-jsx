@@ -17,9 +17,9 @@ func main() {
 			r.Context().Done()
 			return;
 		}
-
-		fmt.Fprintf(w, "Hello!")
-
+		//database call
+		// call the new modules
+		fmt.Fprint(w,)
 	})
 
 	http.HandleFunc("/api/logout", func(w http.ResponseWriter, r *http.Request){
