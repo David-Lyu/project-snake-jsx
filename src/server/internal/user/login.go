@@ -1,5 +1,9 @@
 package snakeUser
 
-func login() {
+import (
+	"net/http"
+)
+
+func Login(r *http.Request) {
 
 }

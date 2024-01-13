@@ -9,7 +9,7 @@ type user struct {
 	Password string
 }
 //grabs the
-func signUp(r *http.Request)string {
+func SignUp(r *http.Request)string {
 
 	decoder := json.NewDecoder(r.Body)
 	var t user

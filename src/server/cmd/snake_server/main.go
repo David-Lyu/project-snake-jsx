@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"snake_server/internal/snakeUser"
 )
 
 func main() {
@@ -19,6 +20,7 @@ func main() {
 		}
 		//database call
 		// call the new modules
+		snakeUser.Login();
 		fmt.Fprint(w,)
 	})
 
