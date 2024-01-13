@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"snake_server/internal/snakeUser"
+	score "snake_server/internal/score"
+	user "snake_server/internal/user"
 )
 
 func main() {
@@ -20,7 +21,7 @@ func main() {
 		}
 		//database call
 		// call the new modules
-		snakeUser.Login();
+		user.Login(r)
 		fmt.Fprint(w,)
 	})
 
@@ -33,6 +34,7 @@ func main() {
 	http.HandleFunc("/api/score", func(w http.ResponseWriter, r *http.Request){
 		// should grab the first 10 high scores
 		fmt.Fprintf(w, "Hello!")
+		score.Score()
 	})
 
 	// need to handle a way to post high score, maybe reuse the top

@@ -1,4 +1,4 @@
-package snakeUser
+package user
 
 import (
 	"encoding/json"

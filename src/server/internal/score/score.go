@@ -1,3 +1,3 @@
-package snakeScore
+package score
 
-func score() {}
+func Score() {}
