@@ -8,14 +8,18 @@ type user struct {
 	Username string
 	Password string
 }
-//grabs the
+
 func SignUp(r *http.Request)string {
 
 	decoder := json.NewDecoder(r.Body)
 	var t user
 	err := decoder.Decode(&t)
 	if(err != nil) {
-		return "Error"
+		var testError = true
+		if(testError) {
+			return "error"
+		}
+		return  "Error"
 	}
 	return "Test"
 }

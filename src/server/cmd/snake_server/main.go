@@ -12,6 +12,7 @@ func main() {
 	http.HandleFunc("/api/login", func(w http.ResponseWriter, r *http.Request){
 		//should be post method, and uses a username and password to login.
 		// create session?
+		user.SignUp(r);
 		if(r.Method!= "POST") {
 			//do somthing
 			w.WriteHeader(http.StatusMethodNotAllowed)
