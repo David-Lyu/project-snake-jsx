@@ -19,7 +19,7 @@ func SignUp(r *http.Request)string {
 		if(testError) {
 			return "error"
 		}
-		return  "Error"
+			return  "Error"
 	}
 	return "Test"
 }
