@@ -26,3 +26,7 @@ func SignUp(db *sql.DB,user snakeTypes.User ) {
 		//log error here
 	}
 }
+
+func checkInput(user snakeTypes.User) {
+	//can use regex, only allow letters and numbers
+}
