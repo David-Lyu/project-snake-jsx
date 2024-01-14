@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	snakeLogger "snake_server/api/logger"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -9,6 +10,7 @@ import (
 func Database()(*sql.DB, error) {
 	db, err := getDatabase()
 	if(err != nil) {
+		snakeLogger.Log("Error")
 		return db, err
 	}
 	initDatabase(db)
@@ -16,6 +18,7 @@ func Database()(*sql.DB, error) {
 }
 
 func getDatabase()(*sql.DB, error) {
+	//Todo: Create a root dir for go
 	const dbConnection = "../../api/database/snake_db.db"
 
 	return sql.Open("sqlite3",dbConnection)

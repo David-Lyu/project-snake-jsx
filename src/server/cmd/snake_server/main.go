@@ -21,8 +21,13 @@ func main() {
 		if(!isValidHttpMethod("POST", w,r)) {
 			return
 		}
-		var user = user.Login(r)
-		fmt.Fprint(w,user)
+		var response, err = user.Login(r, db)
+		if(err != nil) {
+			w.WriteHeader(http.StatusUnauthorized)
+		} else {
+			w.WriteHeader(http.StatusOK)
+		}
+		fmt.Fprint(w,response)
 	})
 
 	//Handles creating user
