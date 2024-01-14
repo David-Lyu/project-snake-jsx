@@ -2,6 +2,8 @@ package database
 
 import (
 	"database/sql"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func Database()(*sql.DB, error) {
@@ -14,7 +16,7 @@ func Database()(*sql.DB, error) {
 }
 
 func getDatabase()(*sql.DB, error) {
-	const dbConnection = ""
+	const dbConnection = "../../api/database/snake_db.db"
 
 	return sql.Open("sqlite3",dbConnection)
 }
@@ -28,6 +30,6 @@ func initDatabase(sql *sql.DB) {
 
 func CreateUUID() {
 	//should it 1234create uuid? or just have it increment with id.
-	const Salt = "SNAKEGAME"
+	const Salt = "SNAKE_GAME"
 
 }

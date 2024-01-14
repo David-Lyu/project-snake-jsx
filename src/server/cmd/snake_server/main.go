@@ -4,48 +4,76 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	database "snake_server/api/database"
 	score "snake_server/internal/score"
 	user "snake_server/internal/user"
 )
 
 func main() {
-	//create db
+	//Todo need to change db Init database
+	db, err := database.Database()
+	if(err != nil) {
+		return;
+	}
 
-	//init db
+	// Handles logging in
 	http.HandleFunc("/api/login", func(w http.ResponseWriter, r *http.Request){
-		//should be post method, and uses a username and password to login.
-		// create session?
-		user.SignUp(r);
-		if(r.Method!= "POST") {
-			//do somthing
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			fmt.Fprint(w,"Method not allowed")
-			r.Context().Done()
-			return;
+		if(!isValidHttpMethod("POST", w,r)) {
+			return
 		}
-		//database call
-		// call the new modules
-		user.Login(r)
-		fmt.Fprint(w,)
+		var user = user.Login(r)
+		fmt.Fprint(w,user)
 	})
 
+	//Handles creating user
+	http.HandleFunc("/api/user", func(w http.ResponseWriter, r *http.Request) {
+		if(!isValidHttpMethod("POST", w,r)) {
+			return
+		}
+		var response, err = user.SignUp(r,db)
+		if(err != nil) {
+			w.WriteHeader(http.StatusBadRequest)
+		} else {
+			w.WriteHeader(http.StatusCreated)
+		}
+		fmt.Fprint(w, response)
+
+
+
+	})
+
+	//Handles creating logging out
 	http.HandleFunc("/api/logout", func(w http.ResponseWriter, r *http.Request){
+		if(!isValidHttpMethod("GET", w,r)) {
+			return
+		}
 		// should be get request
 		// and then log out session?
 		fmt.Fprintf(w, "Hello!")
 	})
 
+	//Handles grabbing scores
 	http.HandleFunc("/api/score", func(w http.ResponseWriter, r *http.Request){
+		if(!isValidHttpMethod("GET", w,r)) {
+			return
+		}
 		// should grab the first 10 high scores
 		fmt.Fprintf(w, "Hello!")
 		score.Score()
 	})
 
-	// need to handle a way to post high score, maybe reuse the top
-	// htpp.HandleFunc("/api/high-score/")
-
 	fmt.Printf("Starting server at port 8091\n")
 	if err := http.ListenAndServe(":8091", nil); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func isValidHttpMethod(method string, w http.ResponseWriter, r *http.Request)bool {
+	if(r.Method !=method) {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		fmt.Fprint(w,"Method not allowed")
+		r.Context().Done()
+		return false
+	}
+	return true
 }

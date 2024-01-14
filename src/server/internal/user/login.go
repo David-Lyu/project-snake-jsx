@@ -4,6 +4,6 @@ import (
 	"net/http"
 )
 
-func Login(r *http.Request) {
-
+func Login(r *http.Request)string {
+	return ""
 }
