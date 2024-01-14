@@ -1,10 +1,19 @@
-package snakedb
+package database
 
 import (
 	"database/sql"
 )
 
-func GetDatabase()(*sql.DB, error) {
+func Database()(*sql.DB, error) {
+	db, err := getDatabase()
+	if(err != nil) {
+		return db, err
+	}
+	initDatabase(db)
+	return db, nil
+}
+
+func getDatabase()(*sql.DB, error) {
 	const dbConnection = ""
 
 	return sql.Open("sqlite3",dbConnection)
@@ -18,5 +27,7 @@ func initDatabase(sql *sql.DB) {
 }
 
 func CreateUUID() {
-	//should it create uuid? or just have it increment with id.
+	//should it 1234create uuid? or just have it increment with id.
+	const Salt = "SNAKEGAME"
+
 }

@@ -9,6 +9,9 @@ import (
 )
 
 func main() {
+	//create db
+
+	//init db
 	http.HandleFunc("/api/login", func(w http.ResponseWriter, r *http.Request){
 		//should be post method, and uses a username and password to login.
 		// create session?
