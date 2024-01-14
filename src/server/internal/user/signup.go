@@ -2,6 +2,7 @@ package user
 
 import (
 	"database/sql"
+	"errors"
 	"net/http"
 	database "snake_server/api/database"
 )
@@ -28,6 +29,11 @@ func SignUp(r *http.Request, db *sql.DB) (string,error) {
 	// 	}
 	// 		return message, err
 	// }
-	database.SignUp(db, user)
-	return "success", nil
+	if(database.SignUp(db, user)) {
+		message = "success"
+	} else {
+		message = "unsuccessful"
+		err = errors.New("Can not create user")
+	}
+	return message, err
 }
