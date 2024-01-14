@@ -46,3 +46,6 @@ dist-ssr
 
 # Go workspace file
 go.work
+
+# Database files
+**/*.db

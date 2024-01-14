@@ -7,6 +7,8 @@ import (
 )
 
 func SignUp(db *sql.DB,user snakeTypes.User ) {
+	//Todo: Create method to check User inputs
+
 	var query = "INSERT INTO user (username, password) VALUES(?,?)"
 	var statement, err = db.Prepare(query)
 	//handle error here
