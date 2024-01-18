@@ -8,8 +8,9 @@ import (
 )
 
 func Login(r *http.Request, db *sql.DB)(string, error) {
-
-	var user, message, err = database.GetJSONBody(r);
+	//Todo instead of sending string, send object with session token created.
+	// Need to look up how to make session token
+	var user, message, err = database.GetUserJSONBody(r);
 	if(err != nil) {
 		return message, err
 	}

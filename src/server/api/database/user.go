@@ -50,7 +50,7 @@ func GetUser(db *sql.DB, user snakeTypes.User)bool {
 	return true
 }
 
-func GetJSONBody(r *http.Request)(user snakeTypes.User, message string, err error) {
+func GetUserJSONBody(r *http.Request)(user snakeTypes.User, message string, err error) {
 	decoder := json.NewDecoder(r.Body)
 	var t snakeTypes.User
 	message = "success"

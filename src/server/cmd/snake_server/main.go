@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	database "snake_server/api/database"
-	score "snake_server/internal/score"
-	user "snake_server/internal/user"
+	"snake_server/api/database"
+	"snake_server/internal/score"
+	"snake_server/internal/user"
 )
 
 func main() {
@@ -64,7 +64,7 @@ func main() {
 		}
 		// should grab the first 10 high scores
 		fmt.Fprintf(w, "Hello!")
-		score.Score()
+		score.Score(r,db)
 	})
 
 	fmt.Printf("Starting server at port 8091\n")
@@ -74,7 +74,7 @@ func main() {
 }
 
 func isValidHttpMethod(method string, w http.ResponseWriter, r *http.Request)bool {
-	if(r.Method !=method) {
+	if(r.Method != method) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		fmt.Fprint(w,"Method not allowed")
 		r.Context().Done()

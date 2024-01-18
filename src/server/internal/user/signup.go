@@ -13,7 +13,7 @@ type user struct {
 
 func SignUp(r *http.Request, db *sql.DB) (string,error) {
 
-	var user, message, err = database.GetJSONBody(r)
+	var user, message, err = database.GetUserJSONBody(r)
 	if(err != nil) {
 		return message, err
 	}
