@@ -12,7 +12,7 @@
 services:
   frontend:
     build:
-      context: ./src/client
+      context: .
     environment:
       NODE_ENV: production
   # backend:
@@ -21,13 +21,6 @@ services:
   #   environment:
   #   ports:
   #     - 8091:8091
-  # nginx:
-  #   build: .
-  #   depends_on:
-  #     # can do condition https://stackoverflow.com/questions/31746182/docker-compose-wait-for-container-x-before-starting-y
-  #     - frontend
-  #   ports:
-  #     - 8090:80
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
 # start the database before your application. The `db-data` volume persists the
