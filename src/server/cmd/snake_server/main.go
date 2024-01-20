@@ -59,12 +59,22 @@ func main() {
 
 	//Handles grabbing scores
 	http.HandleFunc("/api/score", func(w http.ResponseWriter, r *http.Request){
-		if(!isValidHttpMethod("GET", w,r)) {
+		switch r.Method {
+		case "GET":
+			w.Header().Set("Content-Type","application/json")
+			//Needs to be under Set for it to work
+			w.WriteHeader(http.StatusCreated)
+			fmt.Fprint(w,string(score.GetScore(db)))
 			return
+		case "POST":
+			w.WriteHeader(http.StatusOK)
+			score.SetScore(r,db)
+			fmt.Fprint(w,"Test")
+			return
+		default:
+			isValidHttpMethod("GET",w,r)
+			fmt.Fprint(w,"Method not allowed")
 		}
-		// should grab the first 10 high scores
-		fmt.Fprintf(w, "Hello!")
-		score.Score(r,db)
 	})
 
 	fmt.Printf("Starting server at port 8091\n")
