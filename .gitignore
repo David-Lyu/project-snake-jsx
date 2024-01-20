@@ -49,3 +49,6 @@ go.work
 
 # Database files
 **/*.db
+
+public/dist-data/*
+**/._**
