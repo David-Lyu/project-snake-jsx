@@ -34,7 +34,7 @@ func GetScore(db *sql.DB) *[10]snakeTypes.Scores  {
 }
 
 func SetScore(db *sql.DB, score snakeTypes.Scores) bool {
-	var query = "INSERT INTO score(score user_id) VALUES (? ?);"
+	var query = "INSERT INTO score(score, user_id) VALUES (?, ?);"
 
 	var statement, err = db.Prepare(query)
 	if(err != nil) {
@@ -42,7 +42,7 @@ func SetScore(db *sql.DB, score snakeTypes.Scores) bool {
 		return false
 	}
 	resp, err := statement.Exec(score.Score, score.User_id)
-	if(err != nil || resp != nil) {
+	if(err != nil || resp == nil) {
 		snakeLogger.Log("error")
 		statement.Close()
 		return false
