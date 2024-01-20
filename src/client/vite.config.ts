@@ -10,8 +10,8 @@ const fullReloadAlways = {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  root: 'src/client',
-  build: { outDir: '../../dist' },
+  root: './',
+  build: { outDir: './dist' },
   publicDir: '../../public',
   plugins: [react(), fullReloadAlways],
   port: 8090,

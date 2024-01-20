@@ -10,13 +10,22 @@
 
 #Need to get docker to rebuild itself
 services:
-  server:
+  frontend:
     build:
-      context: .
+      context: ./src/client
     environment:
       NODE_ENV: production
     ports:
       - 8090:80
+  # backend:
+  #   build:
+  #     context: ./src/server
+  #   environment:
+  #   ports:
+  #     - 8091:8091
+  nginx:
+    build:
+      context: .
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
 # start the database before your application. The `db-data` volume persists the
