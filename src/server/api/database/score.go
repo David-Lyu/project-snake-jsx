@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"snake_server/api/logger"
 	snakeLogger "snake_server/api/logger"
 	snakeTypes "snake_server/api/types/score"
@@ -43,7 +44,10 @@ func SetScore(db *sql.DB, score snakeTypes.Scores) bool {
 	}
 	resp, err := statement.Exec(score.Score, score.User_id)
 	if(err != nil || resp == nil) {
-		snakeLogger.Log("error")
+		if(err == nil) {
+			err = errors.New("No response")
+		}
+		snakeLogger.LogApp("error",err)
 		statement.Close()
 		return false
 	}

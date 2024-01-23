@@ -13,7 +13,7 @@ func SignUp(db *sql.DB,user snakeTypes.User )bool {
 	var statement, err = db.Prepare(query)
 	//handle error here
 	if(err != nil) {
-		snakeLogger.Log("error")
+		snakeLogger.LogApp("error",err)
 		return false
 	}
 
@@ -22,7 +22,7 @@ func SignUp(db *sql.DB,user snakeTypes.User )bool {
 
 	_, err = statement.Exec(user.Username,hashPassword(user.Password))
 	if(err != nil) {
-		snakeLogger.Log("error")
+		snakeLogger.LogApp("error",err)
 		statement.Close()
 		return false
 	}
@@ -40,7 +40,7 @@ func GetUser(db *sql.DB, user snakeTypes.User)bool {
 	}
 	resp, err := statement.Exec(user.Username,hashPassword(user.Password))
 	if(err != nil || resp != nil) {
-		snakeLogger.Log("error")
+		snakeLogger.LogApp("error",err)
 		statement.Close()
 		return false
 	}

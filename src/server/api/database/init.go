@@ -10,7 +10,7 @@ import (
 func Database()(*sql.DB, error) {
 	db, err := getDatabase()
 	if(err != nil) {
-		snakeLogger.Log("Error")
+		snakeLogger.LogApp("Error", err)
 		return db, err
 	}
 	initDatabase(db)
