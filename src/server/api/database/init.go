@@ -18,7 +18,7 @@ func Database()(*sql.DB, error) {
 }
 
 func getDatabase()(*sql.DB, error) {
-	//Todo: Create a root dir for go
+	//Todo: Create a root dir for go or create db by hand
 	const dbConnection = "../../api/database/snake_db.db"
 
 	return sql.Open("sqlite3",dbConnection)
