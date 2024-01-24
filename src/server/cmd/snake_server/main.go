@@ -4,12 +4,16 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"snake_server/api/database"
 	"snake_server/internal/score"
 	"snake_server/internal/user"
 )
 
 func main() {
+
+	os.Setenv("TEST_GO","12345");
+
 	//Todo need to change db Init database
 	db, err := database.Database()
 	if(err != nil) {
