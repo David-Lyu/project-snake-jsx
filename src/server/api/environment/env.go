@@ -1,17 +1,14 @@
 package environment
 
 import (
-	"io/fs"
-	"path/filepath"
-	"runtime"
+	"os"
 )
 
 func GetEnvFile() {
-	var _, b, _, _ = runtime.Caller(0)
 
-	// Root folder of this project
-	var Root = filepath.Join(filepath.Dir(b), "../..")
-	fs.FS
+	var pwd = rootPath()
+	os.ReadFile(pwd + "/.env")
+	os.Open(pwd + "/.env")
 
 	// fs.ReadFile(.FS,Root)
 }
