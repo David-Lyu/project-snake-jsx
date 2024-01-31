@@ -52,3 +52,4 @@ go.work
 
 public/dist-data/*
 **/._**
+**/.env
