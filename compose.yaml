@@ -19,6 +19,8 @@ services:
       - ./public/dist-data:/app/src/client/dist
     ports:
       - '8090:80'
+    depends_on:
+      - api
   api:
     build:
       context: ./src/server

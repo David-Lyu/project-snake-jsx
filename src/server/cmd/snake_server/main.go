@@ -5,17 +5,23 @@ import (
 	"log"
 	"net/http"
 	"snake_server/api/database"
-	env "snake_server/api/environment"
+	envType "snake_server/api/types/environment"
+	env "snake_server/internal/environment"
 	"snake_server/internal/score"
 	"snake_server/internal/user"
 )
 
 func main() {
 
-	env.GetEnvFile();
+	//stores any env into os.GetEnv
+	var EnvironmentVars = envType.Environment{}
+	EnvironmentVars.RootPath = env.GetRootPath()
+
+	//transfers env variables from .env to the os env vars
+	env.StoreEnvironment(env.GetEnvFile(EnvironmentVars.RootPath));
 
 	//Todo need to change db Init database
-	db, err := database.Database()
+	db, err := database.Database(EnvironmentVars.RootPath)
 	if(err != nil) {
 		return;
 	}
