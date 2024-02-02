@@ -6,3 +6,8 @@ type User struct {
 	Password string `json:"password"`
 	HighScore int `json:"high_score"`
 }
+
+type UserResponse struct {
+	Response string
+	Message string
+}

@@ -37,3 +37,7 @@ func SignUp(r *http.Request, db *sql.DB) (string,error) {
 	}
 	return message, err
 }
+
+func validateBody(r *http.Request) {
+
+}
