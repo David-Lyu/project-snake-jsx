@@ -1,10 +1,13 @@
 package user
 
 import (
+	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"net/http"
 	snakeTypes "snake_server/api/types/user"
+	"strings"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -30,4 +33,21 @@ func hashPassword(password string) ([]byte, error){
 
 func checkPassword(password, hash []byte) error {
 	return bcrypt.CompareHashAndPassword(password,hash)
+}
+
+func createSessionToken(user snakeTypes.User) string {
+	var time =  sha256.Sum256([]byte(time.Now().GoString()))
+	var token = sha256.Sum256([]byte(user.Username))
+	return string(token[:]) + "/" + string(time[:])
+}
+
+func validateToken(token string, user snakeTypes.User) bool {
+	var prefix, suffix, _ = strings.Cut(token,"/")
+	var userToken = sha256.Sum256([]byte(user.Username))
+	if(prefix == string(userToken[:])) {
+		if(suffix == ""){
+			return true
+		}
+	}
+	return false
 }
