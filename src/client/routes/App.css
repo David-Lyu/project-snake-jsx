@@ -27,6 +27,11 @@ body {
   gap: 0.25rem;
 }
 
+/* Start screen */
+.start-screen {
+  height: 100vh;
+}
+
 .row.start-screen-items {
   width: 50%;
 }
@@ -56,13 +61,12 @@ body {
   flex-direction: column;
 }
 
-/* .blur {
-  background-color: rgba(0, 0, 0, 0.1);
-} */
-
+/* Board game css */
 .boardgame-container {
   position: relative;
 }
+
+/* Joystick css */
 
 .joystick-container {
   position: absolute;
