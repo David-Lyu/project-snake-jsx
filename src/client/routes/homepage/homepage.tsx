@@ -7,7 +7,13 @@ export default function HomePage() {
   return (
     <div className="start-screen container">
       <div className="row start-screen-items">
-        <h1>SNAKE</h1>
+        <h1>
+          <span className="S">S</span>
+          <span className="N">N</span>
+          <span className="A">A</span>
+          <span className="K">K</span>
+          <span className="E">E</span>
+        </h1>
         <h6>Please choose the following options:</h6>
         <button disabled={true}>Login/Sign up</button>
         <Link to="/play">Play Game</Link>

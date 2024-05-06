@@ -2,8 +2,23 @@
   --game-background-color: rgb(165, 165, 165);
 }
 
+a {
+  text-decoration: none;
+  color: #f5f5f7;
+}
+
 body {
   margin: 0;
+  background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.9),
+      rgba(0, 0, 0, 0.5)
+    ),
+    url(/assets/vecteezy_illustration-of-a-summer-deep-forest-landscape-in-cartoon_6033141.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  color: #f5f5f7;
 }
 
 .container {
@@ -41,7 +56,19 @@ body {
   /* flex: 1 1 100%; */
   text-align: center;
 }
+.row.start-screen-items > h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 300px;
+  height: 100px;
 
+  /* filter: contrast(0.5);
+
+  background-image: url(/assets/vecteezy_illustration-of-a-summer-deep-forest-landscape-in-cartoon_6033141.svg);
+  background-size: cover;
+  background-repeat: no-repeat; */
+}
 .row.start-screen-items button {
   width: 50%;
   flex-basis: 50%;
@@ -62,6 +89,7 @@ body {
 }
 
 /* Board game css */
+
 .boardgame-container {
   position: relative;
 }
