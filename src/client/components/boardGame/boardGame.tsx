@@ -236,5 +236,5 @@ function resetGame(
   //need to use local storage set and grab high score
   scoreboardState.score.value = 0;
   //make modal and play again?
-  setHasGameStarted(false);
+  // setHasGameStarted(false);
 }
