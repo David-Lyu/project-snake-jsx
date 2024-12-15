@@ -58,10 +58,10 @@ export default function BoardGame(props: Props) {
      */
     if (
       snakeState.value.snakeBody.coord[0] <=
-        -snakeState.value.snakeSegSize[0] ||
+      -snakeState.value.snakeSegSize[0] ||
       snakeState.value.snakeBody.coord[0] >= canvasState.value.width ||
       snakeState.value.snakeBody.coord[1] <=
-        -snakeState.value.snakeSegSize[1] ||
+      -snakeState.value.snakeSegSize[1] ||
       snakeState.value.snakeBody.coord[1] >= canvasState.value.height
     ) {
       resetGame(
@@ -236,5 +236,5 @@ function resetGame(
   //need to use local storage set and grab high score
   scoreboardState.score.value = 0;
   //make modal and play again?
-  // setHasGameStarted(false);
+  setHasGameStarted(false);
 }
