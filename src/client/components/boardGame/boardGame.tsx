@@ -192,7 +192,7 @@ function setSnake(ctx: CanvasRenderingContext2D) {
     snakeBody.coord[1] === boardGameState.value.foodCoord[1]
   ) {
     scoreboardState.score.value += boardGameState.value.snakePoints;
-    localStorage.updateHighscore(scoreboardState.score.value)
+    scoreboardState.highScore.value = localStorage.updateHighscore(scoreboardState.score.value)
     snakeState.value.addSnakeBody(...lastSnakeBody);
     boardGameState.value.createFood(snakeState.value);
   }
