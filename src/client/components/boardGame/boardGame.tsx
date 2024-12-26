@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
+import React, {
   useContext,
   useEffect,
   useLayoutEffect,
@@ -15,6 +15,7 @@ import BoardGameState, {
 } from '../../store/boardGame/boardGameState';
 import scoreboardState from '../../store/scoreboard/scoreboard';
 import Joystick from '../joystick/Joystick';
+import LocalStorageAdapter from '../../modules/localStorage';
 
 type Props = {
   setHasGameStarted: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,6 +23,9 @@ type Props = {
 
 //Used in joystick need to refactor
 type Direction = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
+
+//Grab singleton for adapter
+const localStorage = LocalStorageAdapter.GetInstance()
 
 //Todo: Need to open input when user is in mobile
 export default function BoardGame(props: Props) {
@@ -120,6 +124,9 @@ export default function BoardGame(props: Props) {
     handleUserInput(pseudoEvent as KeyboardEvent);
   }, [direction]);
 
+  useEffect(() => {
+    scoreboardState.highScore = localStorage.getHighscore();
+  }, [])
   return (
     <section className="boardgame-container">
       <canvas ref={boardGameRef} width={canvasSize[0]} height={canvasSize[1]}>
@@ -185,6 +192,7 @@ function setSnake(ctx: CanvasRenderingContext2D) {
     snakeBody.coord[1] === boardGameState.value.foodCoord[1]
   ) {
     scoreboardState.score.value += boardGameState.value.snakePoints;
+    localStorage.updateHighscore(scoreboardState.score.value)
     snakeState.value.addSnakeBody(...lastSnakeBody);
     boardGameState.value.createFood(snakeState.value);
   }
@@ -204,19 +212,19 @@ function onKeyDown(
   }
 
   switch (e.key) {
-    case 'W':
+    case 'w':
     case 'ArrowUp':
       if (snakeState.direction !== 'down') snakeState.direction = 'up';
       break;
-    case 'S':
+    case 's':
     case 'ArrowDown':
       if (snakeState.direction !== 'up') snakeState.direction = 'down';
       break;
-    case 'A':
+    case 'a':
     case 'ArrowLeft':
       if (snakeState.direction !== 'right') snakeState.direction = 'left';
       break;
-    case 'D':
+    case 'd':
     case 'ArrowRight':
       if (snakeState.direction !== 'left') snakeState.direction = 'right';
       break;
