@@ -15,14 +15,19 @@ import LocalStorageAdapter from './modules/localStorage';
 import { Store } from './types/types';
 
 const router = createBrowserRouter([
+  //  {
+  //    path: '/',
+  //    element: <HomePage></HomePage>
+  //  },
+  //  {
+  //    path: 'play',
+  //    element: <Snake></Snake>
+  //  }
   {
     path: '/',
-    element: <HomePage></HomePage>
-  },
-  {
-    path: 'play',
     element: <Snake></Snake>
   }
+
 ]);
 
 export const AppState = createContext({} as Store);

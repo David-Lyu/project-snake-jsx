@@ -1,5 +1,5 @@
 import { Signal } from '@preact/signals';
-import { useContext, useLayoutEffect, useState } from 'react';
+import React, { useContext, useLayoutEffect, useState } from 'react';
 import { AppState } from '../../main';
 //need to move it out maybe board game?
 type Props = {

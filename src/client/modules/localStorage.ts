@@ -1,6 +1,7 @@
 export default class LocalStorageAdapter {
 
 	private name = "highscore";
+	private static _instance = new LocalStorageAdapter();
 	constructor() {
 		if (!LocalStorageAdapter._instance) {
 			LocalStorageAdapter._instance = this;
@@ -19,7 +20,9 @@ export default class LocalStorageAdapter {
 	updateHighscore(score: number) {
 		if (score > this.getHighscore()) {
 			window.localStorage.setItem(this.name, score.toString())
+			return score;
 		}
+		return this.getHighscore()
 	}
 
 }

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import BoardGame from '../../components/boardGame/boardGame';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import StartGameModal from '../../components/startGameModal/startGameModal';
 import Scoreboard from '../../components/scoreboard/scoreboard';
 
@@ -19,7 +19,7 @@ export default function Snake() {
         )}
       </div>
       <div className="container">
-        <Link to="/">Go Back</Link>
+        {/*<Link to="/">Go Back</Link>*/}
         <div className="row">
           <h1>How to Play:</h1>
           <div className="instruction">
