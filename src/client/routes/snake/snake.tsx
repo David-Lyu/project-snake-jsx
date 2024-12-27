@@ -19,7 +19,6 @@ export default function Snake() {
         )}
       </div>
       <div className="container">
-        {/*<Link to="/">Go Back</Link>*/}
         <div className="row">
           <h1>How to Play:</h1>
           <div className="instruction">
