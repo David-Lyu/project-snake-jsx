@@ -9,13 +9,14 @@ import (
 func GetRootPath() string {
 
 	var (
-    _, b, _, _ = runtime.Caller(0)
+		_, b, _, _ = runtime.Caller(0)
 
-    // Root folder of this project
-    Root = filepath.Join(filepath.Dir(b), "../..")
-  )
+		// Root folder of this project
+		Root = filepath.Join(filepath.Dir(b), "../..")
+	)
 
 	fmt.Print(Root)
 
-	return Root;
+	// Todo: Have user input root file with sql
+	return Root
 }
