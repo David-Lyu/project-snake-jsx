@@ -1,0 +1,15 @@
+syntax = "proto3"
+package proto
+
+option go_package = "snake_server/internal/proto/score"
+
+service Score {
+	rpc GetScore(ScoreRequest) return (Score) {}
+	rpc SetScore(Score) return (ScoreAddResp) {}
+}
+
+message ScoreRequest {}
+message Score {
+	int32 score
+	string user
+}
