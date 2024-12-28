@@ -4,7 +4,7 @@ import (
 	"log"
 )
 
-//struct
+// struct
 // type level "error","warn","info"
 func LogApp(level string, err error) {
 	// var buf = bytes.Buffer
@@ -16,7 +16,7 @@ func LogApp(level string, err error) {
 	// )
 	// logger.Panicln(err);
 
-	switch(level) {
+	switch level {
 	case "error":
 		logError(err)
 	case "warn":
@@ -31,6 +31,7 @@ func LogApp(level string, err error) {
 func logError(err error) {
 	//print out a failure log
 	log.Println("Oh no errors")
+	log.Println(err)
 }
 
 func logWarn() {

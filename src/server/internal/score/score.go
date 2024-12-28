@@ -13,7 +13,7 @@ func GetScore(db *sql.DB) []byte {
 	var results = database.GetScore(db)
 	var json, err = encodeScoreJSONBody(results)
 
-	if(err != nil) {
+	if err != nil {
 		//log error here
 		return nil
 	}
@@ -24,7 +24,7 @@ func SetScore(r *http.Request, db *sql.DB) {
 	//Todo check if user exists with ID
 	var score, message, err = getScoreJSONBody(r)
 
-	if(message == "error" && err == nil) {
+	if message == "error" && err == nil {
 		err = errors.New("Malformed Error")
 	}
 	//Todo check if user exists with ID
@@ -32,20 +32,20 @@ func SetScore(r *http.Request, db *sql.DB) {
 	database.SetScore(db, score)
 }
 
-func getScoreJSONBody(r *http.Request)( score snakeTypes.Scores, message string, err error) {
+func getScoreJSONBody(r *http.Request) (score snakeTypes.Scores, message string, err error) {
 	decoder := json.NewDecoder(r.Body)
 	var t snakeTypes.Scores
 	message = "success"
 	err = decoder.Decode(&t)
-	if(t.Score == 0 || t.User_id == 0) {
+	if t.Score == 0 || t.User == "" {
 		message = "error"
 		err = errors.New("Malformed Data")
 	}
 	return t, message, err
 }
 
-func encodeScoreJSONBody(scores *[10]snakeTypes.Scores)([]byte,error) {
-// var test = []snakeTypes.Scores{}
+func encodeScoreJSONBody(scores *[10]snakeTypes.Scores) ([]byte, error) {
+	// var test = []snakeTypes.Scores{}
 	// for i := 0; i < len(scores); i++ {
 	// 	test = append(test, scores[i])
 
