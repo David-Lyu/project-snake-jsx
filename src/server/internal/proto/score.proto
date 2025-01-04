@@ -4,12 +4,14 @@ package proto
 option go_package = "snake_server/internal/proto/score"
 
 service Score {
-	rpc GetScore(ScoreRequest) return (Score) {}
+	rpc GetScores(ScoreRequest) return (Score) {}
 	rpc SetScore(Score) return (ScoreAddResp) {}
 }
 
-message ScoreRequest {}
+message ScoreRequest { repeated score}
 message Score {
 	int32 score
 	string user
 }
+ 
+message ScoreAddResp {}
