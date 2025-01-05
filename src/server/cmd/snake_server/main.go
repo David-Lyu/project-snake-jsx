@@ -29,6 +29,15 @@ func main() {
 	//Runs grpc
 	grpcServer := grpc.NewServer()
 
+	var lis net.Listener
+	//Todo: Eventually make port an environment variable
+	lis, err = net.Listen("tcp", fmt.Sprintf("localhost:%d", 9001))
+	if err != nil {
+		log.Fatal("\nUh oh could not server at %d\n", 9001)
+	}
+
+	grpcServer.Serve(lis)
+
 	// Handles logging in
 	//	http.HandleFunc("/api/login", func(w http.ResponseWriter, r *http.Request) {
 	//		if !isValidHttpMethod("POST", w, r) {
