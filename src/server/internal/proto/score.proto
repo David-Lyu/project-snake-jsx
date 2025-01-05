@@ -1,17 +1,24 @@
-syntax = "proto3"
-package proto
+//syntax = "proto3";
+import "google/protobuf/empty.proto";
 
-option go_package = "snake_server/internal/proto/score"
+package proto;
 
-service Score {
-	rpc GetScores(ScoreRequest) return (Score) {}
-	rpc SetScore(Score) return (ScoreAddResp) {}
+option go_package = "snake_server/internal/proto/score";
+
+service ScoreService{
+	rpc GetScores(google.protobuf.Empty) returns (Scores) {}
+	rpc SetScore(Score) returns (ScoreAddResp) {}
 }
 
-message ScoreRequest { repeated score}
+message Scores {
+	repeated Score scores = 1;
+}
 message Score {
-	int32 score
-	string user
+	required int32 score = 1;
+	required string user = 2;
 }
  
-message ScoreAddResp {}
+message ScoreAddResp {
+	required bool saved = 1;
+}
+
