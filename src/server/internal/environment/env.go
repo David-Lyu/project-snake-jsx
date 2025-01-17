@@ -7,28 +7,38 @@ import (
 	"strings"
 )
 
-func GetEnvFile(rootPath string) []string{
+func GetEnvFile() []string {
 
-	// var readFile, errReadFile = os.ReadFile(pwd + "/.env")
-	var file, err = os.Open(rootPath + "/.env")
+	// Todo: need to get main file path and then add it to .env
+	// use os.Executable... to get it to work eventually
+	var file, err = os.Open(".env")
+	var reader = bufio.NewReader(file)
+	var str string
+	var lines = make([]string, 0)
 
-	if(err != nil) {
+	file.Seek(0, os.O_RDONLY)
+	defer file.Close()
+
+	if err != nil {
 		fmt.Print("some sort of error")
 	}
 
-	// fmt.Printf("readFile: %v\n", file)
-	var scanner = bufio.NewScanner(file)
-	lines := make([]string, 0)
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
+	for {
+		str, err = reader.ReadString('\n')
+		if err != nil {
+			break
+		}
+		lines = append(lines, str)
 	}
 
-	return lines;
+	file.Seek(0, os.O_RDONLY)
+	return lines
 }
 
 func StoreEnvironment(lines []string) {
-	for _ , line := range lines {
-		var prefix, suffix, _ = strings.Cut(line,"=")
-		os.Setenv(prefix,suffix)
+	for _, line := range lines {
+		var prefix, suffix, _ = strings.Cut(line, "=")
+		os.Setenv(prefix, suffix)
 	}
+	fmt.Printf(os.Getenv("ENVIRONMENT"))
 }

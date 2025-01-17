@@ -2,41 +2,39 @@ package main
 
 import (
 	"fmt"
-	"google.golang.org/grpc"
-	"log"
-	"net"
-	"snake_server/api/database"
-	envType "snake_server/api/types/environment"
+	"net/http"
 	env "snake_server/internal/environment"
-	"snake_server/internal/score"
-	"snake_server/internal/user"
 )
 
 func main() {
 
 	//stores any env into os.GetEnv
-	var EnvironmentVars = envType.Environment{}
-	EnvironmentVars.RootPath = env.GetRootPath()
+	// var EnvironmentVars = envType.Environment{}
+	var envVars = env.GetEnvFile()
+	env.StoreEnvironment(envVars)
+	// fmt.Println(envVars)
+
+	// EnvironmentVars.RootPath = env.GetRootPath()
 
 	//transfers env variables from .env to the os env vars
-	env.StoreEnvironment(env.GetEnvFile(EnvironmentVars.RootPath))
+	// env.StoreEnvironment(env.GetEnvFile(EnvironmentVars.RootPath))
 
-	db, err := database.Database(EnvironmentVars.RootPath)
-	if err != nil {
-		return
-	}
+	// db, err := database.Database(EnvironmentVars.RootPath)
+	// if err != nil {
+	// 	return
+	// }
 
-	//Runs grpc
-	grpcServer := grpc.NewServer()
+	// //Runs grpc
+	// grpcServer := grpc.NewServer()
 
-	var lis net.Listener
-	//Todo: Eventually make port an environment variable
-	lis, err = net.Listen("tcp", fmt.Sprintf("localhost:%d", 9001))
-	if err != nil {
-		log.Fatal("\nUh oh could not server at %d\n", 9001)
-	}
+	// var lis net.Listener
+	// //Todo: Eventually make port an environment variable
+	// lis, err = net.Listen("tcp", fmt.Sprintf("localhost:%d", 9001))
+	// if err != nil {
+	// 	log.Fatal("\nUh oh could not server at %d\n", 9001)
+	// }
 
-	grpcServer.Serve(lis)
+	// grpcServer.Serve(lis)
 
 	// Handles logging in
 	//	http.HandleFunc("/api/login", func(w http.ResponseWriter, r *http.Request) {

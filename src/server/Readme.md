@@ -1,3 +1,6 @@
+# Only works in Unix like servers.
+# Need to have .env cwd of terminal that calls main.
+
 # Snake Server
 
 1) Starts on port 8091
