@@ -40,5 +40,4 @@ func StoreEnvironment(lines []string) {
 		var prefix, suffix, _ = strings.Cut(line, "=")
 		os.Setenv(prefix, suffix)
 	}
-	fmt.Printf(os.Getenv("ENVIRONMENT"))
 }
