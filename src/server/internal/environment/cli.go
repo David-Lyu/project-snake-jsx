@@ -12,7 +12,6 @@ GO_RUN returns true
 func InitCommandFlags() {
 	cmd := flag.String("go_run", "", "")
 	flag.Parse()
-	println(string(*cmd))
 	if string(*cmd) == "" {
 		return
 	}

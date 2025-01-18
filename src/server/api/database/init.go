@@ -10,7 +10,6 @@ import (
 
 func Database() (*sql.DB, error) {
 	path := environment.GetDBPath()
-	println("\n" + path)
 
 	if path == "" {
 		path = environment.GetDefaultPath() + "/api/database/"

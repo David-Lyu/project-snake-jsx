@@ -9,12 +9,15 @@ import (
 )
 
 func GetMainPath() string {
+	var isNotBuild = GetGoRunFlag()
+	if isNotBuild != "" {
+		return ""
+	}
 	var mainPath, error = os.Executable()
 	if error != nil {
 		log.Fatal("main file")
 	}
 
-	println(mainPath)
 	var prefix string
 	if mainPath[len(mainPath)-4:] == "main" {
 		prefix = mainPath[:len(mainPath)-4]
