@@ -9,6 +9,7 @@ import (
 
 func main() {
 
+	env.InitCommandFlags()
 	//stores any env into os.GetEnv
 	// var EnvironmentVars = envType.Environment{}
 	var envVars = env.GetEnvFile()

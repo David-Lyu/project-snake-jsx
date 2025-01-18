@@ -14,6 +14,7 @@ func GetMainPath() string {
 		log.Fatal("main file")
 	}
 
+	println(mainPath)
 	var prefix string
 	if mainPath[len(mainPath)-4:] == "main" {
 		prefix = mainPath[:len(mainPath)-4]
