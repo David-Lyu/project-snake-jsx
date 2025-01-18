@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"snake_server/api/database"
 	env "snake_server/internal/environment"
 )
 
@@ -12,17 +13,13 @@ func main() {
 	// var EnvironmentVars = envType.Environment{}
 	var envVars = env.GetEnvFile()
 	env.StoreEnvironment(envVars)
-	// fmt.Println(envVars)
 
-	// EnvironmentVars.RootPath = env.GetRootPath()
-
-	//transfers env variables from .env to the os env vars
-	// env.StoreEnvironment(env.GetEnvFile(EnvironmentVars.RootPath))
-
-	// db, err := database.Database(EnvironmentVars.RootPath)
-	// if err != nil {
-	// 	return
-	// }
+	db, err := database.Database()
+	if err != nil {
+		return
+	}
+	// Placeholder to not throw errors
+	db.Close()
 
 	// //Runs grpc
 	// grpcServer := grpc.NewServer()

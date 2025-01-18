@@ -3,15 +3,27 @@ package environment
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 )
 
+func GetMainPath() string {
+	var mainPath, error = os.Executable()
+	if error != nil {
+		log.Fatal("main file")
+	}
+
+	var prefix string
+	if mainPath[len(mainPath)-4:] == "main" {
+		prefix = mainPath[:len(mainPath)-4]
+	}
+	return prefix
+}
 func GetEnvFile() []string {
 
-	// Todo: need to get main file path and then add it to .env
-	// use os.Executable... to get it to work eventually
-	var file, err = os.Open(".env")
+	var prefix = GetMainPath()
+	var file, err = os.Open(prefix + ".env")
 	var reader = bufio.NewReader(file)
 	var str string
 	var lines = make([]string, 0)

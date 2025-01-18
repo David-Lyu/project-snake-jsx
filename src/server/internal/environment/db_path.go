@@ -2,11 +2,15 @@ package environment
 
 import (
 	"os"
+	"path/filepath"
+	"runtime"
 )
 
 func GetDBPath() string {
+	return GetMainPath() + os.Getenv("DB_PATH")
+}
 
-	path := os.Getenv("DB_PATH")
-	// Todo: Have user input root file with sql
-	return path
+func GetDefaultPath() string {
+	var _, b, _, _ = runtime.Caller(0)
+	return filepath.Join(filepath.Dir(b), "../../")
 }

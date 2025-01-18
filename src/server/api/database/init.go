@@ -3,12 +3,18 @@ package database
 import (
 	"database/sql"
 	snakeLogger "snake_server/api/logger"
+	"snake_server/internal/environment"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func Database(rootPath string) (*sql.DB, error) {
-	db, err := getDatabase(rootPath)
+func Database() (*sql.DB, error) {
+	path := environment.GetDBPath()
+
+	if path == "" {
+		path = environment.GetDefaultPath() + "/api/database/"
+	}
+	db, err := getDatabase(path)
 	if err != nil {
 		snakeLogger.LogApp("Error", err)
 		return db, err
@@ -19,8 +25,12 @@ func Database(rootPath string) (*sql.DB, error) {
 
 func getDatabase(rootPath string) (*sql.DB, error) {
 	//Todo: Create a root dir for go or create db by hand
-
-	var dbConnection = rootPath + "/api/database/snake_db.db"
+	var dbConnection string
+	if rootPath[len(rootPath)-2:] == "db" {
+		dbConnection = rootPath
+	} else {
+		dbConnection = rootPath + "snake_db.db"
+	}
 
 	return sql.Open("sqlite3", dbConnection)
 }
