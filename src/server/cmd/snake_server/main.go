@@ -2,9 +2,12 @@ package main
 
 import (
 	"fmt"
+	"net"
 	"net/http"
 	"snake_server/api/database"
 	env "snake_server/internal/environment"
+
+	"google.golang.org/grpc"
 )
 
 func main() {
@@ -23,16 +26,16 @@ func main() {
 	db.Close()
 
 	// //Runs grpc
-	// grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer()
 
-	// var lis net.Listener
+	var lis net.Listener
 	// //Todo: Eventually make port an environment variable
-	// lis, err = net.Listen("tcp", fmt.Sprintf("localhost:%d", 9001))
+	lis, err = net.Listen("tcp", fmt.Sprintf("localhost:%d", 9001))
 	// if err != nil {
 	// 	log.Fatal("\nUh oh could not server at %d\n", 9001)
 	// }
 
-	// grpcServer.Serve(lis)
+	grpcServer.Serve(lis)
 
 	// Handles logging in
 	//	http.HandleFunc("/api/login", func(w http.ResponseWriter, r *http.Request) {

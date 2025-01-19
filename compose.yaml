@@ -18,16 +18,17 @@ services:
     volumes:
       - ./public/dist-data:/app/src/client/dist
     ports:
-      - '8090:80'
+      - "8090:80"
     depends_on:
       - api
   api:
     build:
       context: ./src/server
     volumes:
+      - ./src/server/.env:/app/.env
       - ./src/server/api/database/snake_db.db:/app/src/server/api/database/snake_db.db
     ports:
-      - '8091:8091'
+      - "8091:8091"
   # nginx:
   #   build: nginx:latest
   #   volumes:
