@@ -1,14 +1,37 @@
 package main
 
 import (
+	"context"
+	"database/sql"
 	"fmt"
 	"net"
 	"net/http"
 	"snake_server/api/database"
+	scorePB "snake_server/api/proto"
 	env "snake_server/internal/environment"
 
 	"google.golang.org/grpc"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
+
+type server struct {
+	scorePB.UnimplementedScoreServiceServer
+	db *sql.DB
+	sd *database.ScoreDatabase
+}
+
+func (s server) GetScores(c context.Context, _ *emptypb.Empty) (*scorePB.Scores, error) {
+	// println(score)
+	var score = s.sd.GetScore(s.db)
+	return score, nil
+
+	// return nil, nil
+}
+
+func (s server) SetScore(c context.Context, score *scorePB.Score) (*scorePB.ScoreAddResp, error) {
+
+	return nil, nil
+}
 
 func main() {
 
@@ -35,6 +58,9 @@ func main() {
 	// 	log.Fatal("\nUh oh could not server at %d\n", 9001)
 	// }
 
+	scorePB.RegisterScoreServiceServer(grpcServer, &server{
+		db: db,
+	})
 	grpcServer.Serve(lis)
 
 	// Handles logging in

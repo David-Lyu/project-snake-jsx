@@ -9,7 +9,9 @@ import (
 	snakeTypes "snake_server/api/types/score"
 )
 
-func GetScore(db *sql.DB) []byte {
+type ScoreView struct{}
+
+func (sv ScoreView) GetScore(db *sql.DB) []byte {
 	var results = database.GetScore(db)
 	var json, err = encodeScoreJSONBody(results)
 
@@ -20,7 +22,7 @@ func GetScore(db *sql.DB) []byte {
 	return json
 }
 
-func SetScore(r *http.Request, db *sql.DB) {
+func (sv ScoreView) SetScore(r *http.Request, db *sql.DB) {
 	//Todo check if user exists with ID
 	var score, message, err = getScoreJSONBody(r)
 

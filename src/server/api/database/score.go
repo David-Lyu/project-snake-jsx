@@ -7,7 +7,9 @@ import (
 	snakeTypes "snake_server/api/types/score"
 )
 
-func GetScore(db *sql.DB) *[10]snakeTypes.Scores {
+type ScoreDatabase struct{}
+
+func (sd ScoreDatabase) GetScore(db *sql.DB) *[10]snakeTypes.Scores {
 	var query = "SELECT * FROM score LIMIT 10;"
 	//can't figure out how to return null or empty array. I don't want to use slice
 	var response = [10]snakeTypes.Scores{}
@@ -23,7 +25,7 @@ func GetScore(db *sql.DB) *[10]snakeTypes.Scores {
 	var index = 0
 	for rows.Next() {
 		var data = snakeTypes.Scores{}
-		err = rows.Scan(&data.Id, &data.User, &data.Score)
+		err = rows.Scan(&data.User, &data.Score)
 		if err != nil {
 			snakeLogger.LogApp("error", err)
 			return &response
@@ -34,7 +36,7 @@ func GetScore(db *sql.DB) *[10]snakeTypes.Scores {
 	return &response
 }
 
-func SetScore(db *sql.DB, score snakeTypes.Scores) bool {
+func (sd ScoreDatabase) SetScore(db *sql.DB, score snakeTypes.Scores) bool {
 	var query = "INSERT INTO score(score, user) VALUES (?, ?);"
 
 	var statement, err = db.Prepare(query)
