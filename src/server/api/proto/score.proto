@@ -3,7 +3,7 @@ import "google/protobuf/empty.proto";
 
 package proto;
 
-option go_package = "snake_server/internal/proto/score";
+option go_package = "snake_server/api/proto/score";
 
 service ScoreService{
 	rpc GetScores(google.protobuf.Empty) returns (Scores) {}
@@ -17,8 +17,7 @@ message Score {
 	required int32 score = 1;
 	required string user = 2;
 }
- 
+
 message ScoreAddResp {
 	required bool saved = 1;
 }
-
