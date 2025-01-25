@@ -23,7 +23,7 @@ type server struct {
 func (s server) GetScores(c context.Context, _ *emptypb.Empty) (*scorePB.Scores, error) {
 	// println(score)
 	var score = s.sd.GetScore(s.db)
-	return score, nil
+	return *score.Score, nil
 
 	// return nil, nil
 }

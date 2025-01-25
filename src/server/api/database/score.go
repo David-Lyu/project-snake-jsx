@@ -4,15 +4,16 @@ import (
 	"database/sql"
 	"errors"
 	snakeLogger "snake_server/api/logger"
+	score "snake_server/api/proto"
 	snakeTypes "snake_server/api/types/score"
 )
 
 type ScoreDatabase struct{}
 
-func (sd ScoreDatabase) GetScore(db *sql.DB) *[10]snakeTypes.Scores {
+func (sd ScoreDatabase) GetScore(db *sql.DB) *snakeTypes.Scores {
 	var query = "SELECT * FROM score LIMIT 10;"
 	//can't figure out how to return null or empty array. I don't want to use slice
-	var response = [10]snakeTypes.Scores{}
+	var response = snakeTypes.Scores{}
 	var rows, err = db.Query(query)
 	if err != nil {
 
@@ -24,13 +25,14 @@ func (sd ScoreDatabase) GetScore(db *sql.DB) *[10]snakeTypes.Scores {
 	//could make into another function... but nah
 	var index = 0
 	for rows.Next() {
-		var data = snakeTypes.Scores{}
+		var data = score.Score{}
 		err = rows.Scan(&data.User, &data.Score)
 		if err != nil {
 			snakeLogger.LogApp("error", err)
 			return &response
 		}
-		response[index] = data
+		response.Score = data
+		// response[index] = data
 		index++
 	}
 	return &response
