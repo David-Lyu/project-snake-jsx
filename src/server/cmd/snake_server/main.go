@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"snake_server/api/database"
@@ -21,9 +22,9 @@ type server struct {
 }
 
 func (s server) GetScores(c context.Context, _ *emptypb.Empty) (*scorePB.Scores, error) {
-	// println(score)
 	var score = s.sd.GetScore(s.db)
-	return *score.Score, nil
+	println(score, "MAIN")
+	return score, nil
 
 	// return nil, nil
 }
@@ -43,25 +44,30 @@ func main() {
 
 	db, err := database.Database()
 	if err != nil {
+		fmt.Printf("Error in DB")
 		return
 	}
 	// Placeholder to not throw errors
 	db.Close()
-
 	// //Runs grpc
 	grpcServer := grpc.NewServer()
 
 	var lis net.Listener
+
 	// //Todo: Eventually make port an environment variable
 	lis, err = net.Listen("tcp", fmt.Sprintf("localhost:%d", 9001))
-	// if err != nil {
-	// 	log.Fatal("\nUh oh could not server at %d\n", 9001)
-	// }
+	if err != nil {
+		log.Fatal("\nUh oh could not server at %d\n", 9001)
+	}
 
 	scorePB.RegisterScoreServiceServer(grpcServer, &server{
 		db: db,
 	})
-	grpcServer.Serve(lis)
+	fmt.Println("Listening on port 9001")
+	err = grpcServer.Serve(lis)
+	if err != nil {
+		log.Fatal("grpc server fail")
+	}
 
 	// Handles logging in
 	//	http.HandleFunc("/api/login", func(w http.ResponseWriter, r *http.Request) {

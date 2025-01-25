@@ -3,20 +3,21 @@ package database
 import (
 	"database/sql"
 	"errors"
+	"log"
 	snakeLogger "snake_server/api/logger"
 	score "snake_server/api/proto"
-	snakeTypes "snake_server/api/types/score"
 )
 
 type ScoreDatabase struct{}
 
-func (sd ScoreDatabase) GetScore(db *sql.DB) *snakeTypes.Scores {
+func (sd ScoreDatabase) GetScore(db *sql.DB) *score.Scores {
+	log.Println("In DB")
 	var query = "SELECT * FROM score LIMIT 10;"
 	//can't figure out how to return null or empty array. I don't want to use slice
-	var response = snakeTypes.Scores{}
+	var response = score.Scores{}
 	var rows, err = db.Query(query)
 	if err != nil {
-
+		log.Print("ajdfkalasldfjasfdlkjasdfljasdl;fajds;lasjf:")
 		snakeLogger.LogApp("error", err)
 		return &response
 	}
@@ -25,20 +26,20 @@ func (sd ScoreDatabase) GetScore(db *sql.DB) *snakeTypes.Scores {
 	//could make into another function... but nah
 	var index = 0
 	for rows.Next() {
-		var data = score.Score{}
+		var data = new(score.Score)
 		err = rows.Scan(&data.User, &data.Score)
 		if err != nil {
 			snakeLogger.LogApp("error", err)
 			return &response
 		}
-		response.Score = data
+		response.Scores = append(response.Scores, data)
 		// response[index] = data
 		index++
 	}
 	return &response
 }
 
-func (sd ScoreDatabase) SetScore(db *sql.DB, score snakeTypes.Scores) bool {
+func (sd ScoreDatabase) SetScore(db *sql.DB, score *score.Score) bool {
 	var query = "INSERT INTO score(score, user) VALUES (?, ?);"
 
 	var statement, err = db.Prepare(query)
