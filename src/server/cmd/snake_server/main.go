@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"net"
@@ -23,15 +24,20 @@ type server struct {
 
 func (s server) GetScores(c context.Context, _ *emptypb.Empty) (*scorePB.Scores, error) {
 	var score = s.sd.GetScore(s.db)
-	println(score, "MAIN")
+	// To do check if user exists
+	if score == nil {
+		return nil, errors.New("Score does not exist")
+	}
 	return score, nil
-
-	// return nil, nil
 }
 
 func (s server) SetScore(c context.Context, score *scorePB.Score) (*scorePB.ScoreAddResp, error) {
-
-	return nil, nil
+	var isScoreSet = s.sd.SetScore(s.db, score)
+	if !isScoreSet {
+		return &scorePB.ScoreAddResp{Saved: &isScoreSet}, nil
+	} else {
+		return &scorePB.ScoreAddResp{Saved: &isScoreSet}, nil
+	}
 }
 
 func main() {
@@ -48,7 +54,7 @@ func main() {
 		return
 	}
 	// Placeholder to not throw errors
-	db.Close()
+	defer db.Close()
 	// //Runs grpc
 	grpcServer := grpc.NewServer()
 
@@ -59,9 +65,12 @@ func main() {
 	if err != nil {
 		log.Fatal("\nUh oh could not server at %d\n", 9001)
 	}
+	//initiate scoredb
+	var sd = database.ScoreDatabase{}
 
 	scorePB.RegisterScoreServiceServer(grpcServer, &server{
 		db: db,
+		sd: &sd,
 	})
 	fmt.Println("Listening on port 9001")
 	err = grpcServer.Serve(lis)
@@ -69,69 +78,6 @@ func main() {
 		log.Fatal("grpc server fail")
 	}
 
-	// Handles logging in
-	//	http.HandleFunc("/api/login", func(w http.ResponseWriter, r *http.Request) {
-	//		if !isValidHttpMethod("POST", w, r) {
-	//			return
-	//		}
-	//		var response, err = user.Login(r, db)
-	//		if err != nil {
-	//			w.WriteHeader(http.StatusUnauthorized)
-	//		} else {
-	//			w.WriteHeader(http.StatusOK)
-	//		}
-	//		fmt.Fprint(w, response)
-	//	})
-	//
-	//	//Handles creating user
-	//	http.HandleFunc("/api/user", func(w http.ResponseWriter, r *http.Request) {
-	//		if !isValidHttpMethod("POST", w, r) {
-	//			return
-	//		}
-	//		var response, err = user.SignUp(r, db)
-	//		if err != nil {
-	//			w.WriteHeader(http.StatusBadRequest)
-	//		} else {
-	//			w.WriteHeader(http.StatusCreated)
-	//		}
-	//		fmt.Fprint(w, response)
-	//
-	//	})
-	//
-	//	//Handles creating logging out
-	//	http.HandleFunc("/api/logout", func(w http.ResponseWriter, r *http.Request) {
-	//		if !isValidHttpMethod("GET", w, r) {
-	//			return
-	//		}
-	//		// should be get request
-	//		// and then log out session?
-	//		fmt.Fprintf(w, "Hello!")
-	//	})
-	//
-	//	//Handles grabbing scores
-	//	http.HandleFunc("/api/score", func(w http.ResponseWriter, r *http.Request) {
-	//		switch r.Method {
-	//		case "GET":
-	//			w.Header().Set("Content-Type", "application/json")
-	//			//Needs to be under Set for it to work
-	//			w.WriteHeader(http.StatusOK)
-	//			fmt.Fprint(w, string(score.GetScore(db)))
-	//			return
-	//		case "POST":
-	//			w.WriteHeader(http.StatusCreated)
-	//			score.SetScore(r, db)
-	//			fmt.Fprint(w, "Test")
-	//			return
-	//		default:
-	//			isValidHttpMethod("GET", w, r)
-	//			fmt.Fprint(w, "Method not allowed")
-	//		}
-	//	})
-	//
-	//	fmt.Printf("Starting server at port 8091\n")
-	//	if err := http.ListenAndServe(":8091", nil); err != nil {
-	//		log.Fatal(err)
-	//	}
 }
 
 func isValidHttpMethod(method string, w http.ResponseWriter, r *http.Request) bool {

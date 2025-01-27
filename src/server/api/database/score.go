@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"errors"
-	"log"
 	snakeLogger "snake_server/api/logger"
 	score "snake_server/api/proto"
 )
@@ -11,13 +10,11 @@ import (
 type ScoreDatabase struct{}
 
 func (sd ScoreDatabase) GetScore(db *sql.DB) *score.Scores {
-	log.Println("In DB")
-	var query = "SELECT * FROM score LIMIT 10;"
+	var query = "SELECT user, score FROM score LIMIT 10;"
 	//can't figure out how to return null or empty array. I don't want to use slice
 	var response = score.Scores{}
 	var rows, err = db.Query(query)
 	if err != nil {
-		log.Print("ajdfkalasldfjasfdlkjasdfljasdl;fajds;lasjf:")
 		snakeLogger.LogApp("error", err)
 		return &response
 	}
@@ -40,6 +37,12 @@ func (sd ScoreDatabase) GetScore(db *sql.DB) *score.Scores {
 }
 
 func (sd ScoreDatabase) SetScore(db *sql.DB, score *score.Score) bool {
+	//grab all score and adjust the score
+	var scoreArr = sd.GetScore(db).Scores
+	if len(scoreArr) >= 10 {
+		// Todo: Need to get id and insert into id to replace
+	}
+
 	var query = "INSERT INTO score(score, user) VALUES (?, ?);"
 
 	var statement, err = db.Prepare(query)
