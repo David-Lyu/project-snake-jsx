@@ -12,7 +12,8 @@ import (
 type ScoreView struct{}
 
 func (sv ScoreView) GetScore(db *sql.DB) []byte {
-	var results = database.GetScore(db)
+	var scoreDB = database.ScoreDatabase{}
+	var results = scoreDB.GetScore(db)
 	var json, err = encodeScoreJSONBody(results)
 
 	if err != nil {
