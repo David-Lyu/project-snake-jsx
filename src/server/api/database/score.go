@@ -27,7 +27,7 @@ func GetScore(db *sql.DB) *[10]types.Score {
 	var index = 0
 	for rows.Next() {
 		var data = types.Score{}
-		err = rows.Scan(data.User, data.Score)
+		err = rows.Scan(&data.Id, &data.User, &data.Score)
 		if err != nil {
 			snakeLogger.LogApp("error", err)
 			return &response

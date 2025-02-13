@@ -11,6 +11,7 @@ import (
 	"snake_server/api/database"
 	scorePB "snake_server/api/proto"
 	env "snake_server/internal/environment"
+	scoreModel "snake_server/internal/score"
 
 	"google.golang.org/grpc"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -23,7 +24,7 @@ type server struct {
 }
 
 func (s server) GetScores(c context.Context, _ *emptypb.Empty) (*scorePB.Scores, error) {
-	var score = s.sd.GetScore(s.db)
+	var score = s.sd.GRPCGetScore(s.db)
 	// To do check if user exists
 	if score == nil {
 		return nil, errors.New("Score does not exist")
@@ -32,7 +33,7 @@ func (s server) GetScores(c context.Context, _ *emptypb.Empty) (*scorePB.Scores,
 }
 
 func (s server) SetScore(c context.Context, score *scorePB.Score) (*scorePB.ScoreAddResp, error) {
-	var isScoreSet = s.sd.SetScore(s.db, score)
+	var isScoreSet = s.sd.GRPCSetScore(s.db, score)
 	if !isScoreSet {
 		return &scorePB.ScoreAddResp{Saved: &isScoreSet}, nil
 	} else {
@@ -62,11 +63,11 @@ func main() {
 			w.Header().Set("Content-Type", "application/json")
 			//Needs to be under Set for it to work
 			w.WriteHeader(http.StatusOK)
-			fmt.Fprint(w, string(score.GetScore(db)))
+			fmt.Fprint(w, string(scoreModel.GetScore(db)))
 			return
 		case "POST":
 			w.WriteHeader(http.StatusCreated)
-			score.SetScore(r, db)
+			scoreModel.SetScore(r, db)
 			fmt.Fprint(w, "Test")
 			return
 		default:
