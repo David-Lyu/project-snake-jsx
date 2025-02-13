@@ -4,16 +4,16 @@ import (
 	"database/sql"
 	"errors"
 	snakeLogger "snake_server/api/logger"
-	types "snake_server/api/types/score"
+	score "snake_server/api/proto"
 	// score "snake_server/api/proto"
 )
 
 type ScoreDatabase struct{}
 
-func (sd ScoreDatabase) GetScore(db *sql.DB) *types.Scores {
+func (sd ScoreDatabase) GRPCGetScore(db *sql.DB) *score.Scores {
 	var query = "SELECT user, score FROM score LIMIT 10;"
 	//can't figure out how to return null or empty array. I don't want to use slice
-	var response = types.Scores{}
+	var response = score.Scores{}
 	var rows, err = db.Query(query)
 	if err != nil {
 		snakeLogger.LogApp("error", err)
@@ -37,12 +37,12 @@ func (sd ScoreDatabase) GetScore(db *sql.DB) *types.Scores {
 	return &response
 }
 
-func (sd ScoreDatabase) SetScore(db *sql.DB, score *score.Score) bool {
+func (sd ScoreDatabase) GRPCSetScore(db *sql.DB, score *score.Score) bool {
 	//grab all score and adjust the score
-	var scoreArr = sd.GetScore(db).Scores
-	if len(scoreArr) >= 10 {
-		// Todo: Need to get id and insert into id to replace
-	}
+	// var scoreArr = sd.GetScore(db).Scores
+	// if len(scoreArr) >= 10 {
+	// Todo: Need to get id and insert into id to replace
+	// }
 
 	var query = "INSERT INTO score(score, user) VALUES (?, ?);"
 
