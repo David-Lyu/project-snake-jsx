@@ -1,106 +1,84 @@
 package main
 
 import (
+	"context"
+	"database/sql"
+	"errors"
 	"fmt"
-	"google.golang.org/grpc"
 	"log"
 	"net"
+	"net/http"
 	"snake_server/api/database"
-	envType "snake_server/api/types/environment"
+	scorePB "snake_server/api/proto"
 	env "snake_server/internal/environment"
-	"snake_server/internal/score"
-	"snake_server/internal/user"
+
+	"google.golang.org/grpc"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
+
+type server struct {
+	scorePB.UnimplementedScoreServiceServer
+	db *sql.DB
+	sd *database.ScoreDatabase
+}
+
+func (s server) GetScores(c context.Context, _ *emptypb.Empty) (*scorePB.Scores, error) {
+	var score = s.sd.GetScore(s.db)
+	// To do check if user exists
+	if score == nil {
+		return nil, errors.New("Score does not exist")
+	}
+	return score, nil
+}
+
+func (s server) SetScore(c context.Context, score *scorePB.Score) (*scorePB.ScoreAddResp, error) {
+	var isScoreSet = s.sd.SetScore(s.db, score)
+	if !isScoreSet {
+		return &scorePB.ScoreAddResp{Saved: &isScoreSet}, nil
+	} else {
+		return &scorePB.ScoreAddResp{Saved: &isScoreSet}, nil
+	}
+}
 
 func main() {
 
+	env.InitCommandFlags()
 	//stores any env into os.GetEnv
-	var EnvironmentVars = envType.Environment{}
-	EnvironmentVars.RootPath = env.GetRootPath()
+	// var EnvironmentVars = envType.Environment{}
+	var envVars = env.GetEnvFile()
+	env.StoreEnvironment(envVars)
 
-	//transfers env variables from .env to the os env vars
-	env.StoreEnvironment(env.GetEnvFile(EnvironmentVars.RootPath))
-
-	db, err := database.Database(EnvironmentVars.RootPath)
+	db, err := database.Database()
 	if err != nil {
+		fmt.Printf("Error in DB")
 		return
 	}
+	defer db.Close()
 
-	//Runs grpc
-	grpcServer := grpc.NewServer()
+	//Handles grabbing scores
+	http.HandleFunc("/api/score", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case "GET":
+			w.Header().Set("Content-Type", "application/json")
+			//Needs to be under Set for it to work
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, string(score.GetScore(db)))
+			return
+		case "POST":
+			w.WriteHeader(http.StatusCreated)
+			score.SetScore(r, db)
+			fmt.Fprint(w, "Test")
+			return
+		default:
+			isValidHttpMethod("GET", w, r)
+			fmt.Fprint(w, "Method not allowed")
+		}
+	})
 
-	var lis net.Listener
-	//Todo: Eventually make port an environment variable
-	lis, err = net.Listen("tcp", fmt.Sprintf("localhost:%d", 9001))
-	if err != nil {
-		log.Fatal("\nUh oh could not server at %d\n", 9001)
+	fmt.Printf("Starting server at port 8091\n")
+	if err := http.ListenAndServe(":8091", nil); err != nil {
+		log.Fatal(err)
 	}
-
-	grpcServer.Serve(lis)
-
-	// Handles logging in
-	//	http.HandleFunc("/api/login", func(w http.ResponseWriter, r *http.Request) {
-	//		if !isValidHttpMethod("POST", w, r) {
-	//			return
-	//		}
-	//		var response, err = user.Login(r, db)
-	//		if err != nil {
-	//			w.WriteHeader(http.StatusUnauthorized)
-	//		} else {
-	//			w.WriteHeader(http.StatusOK)
-	//		}
-	//		fmt.Fprint(w, response)
-	//	})
-	//
-	//	//Handles creating user
-	//	http.HandleFunc("/api/user", func(w http.ResponseWriter, r *http.Request) {
-	//		if !isValidHttpMethod("POST", w, r) {
-	//			return
-	//		}
-	//		var response, err = user.SignUp(r, db)
-	//		if err != nil {
-	//			w.WriteHeader(http.StatusBadRequest)
-	//		} else {
-	//			w.WriteHeader(http.StatusCreated)
-	//		}
-	//		fmt.Fprint(w, response)
-	//
-	//	})
-	//
-	//	//Handles creating logging out
-	//	http.HandleFunc("/api/logout", func(w http.ResponseWriter, r *http.Request) {
-	//		if !isValidHttpMethod("GET", w, r) {
-	//			return
-	//		}
-	//		// should be get request
-	//		// and then log out session?
-	//		fmt.Fprintf(w, "Hello!")
-	//	})
-	//
-	//	//Handles grabbing scores
-	//	http.HandleFunc("/api/score", func(w http.ResponseWriter, r *http.Request) {
-	//		switch r.Method {
-	//		case "GET":
-	//			w.Header().Set("Content-Type", "application/json")
-	//			//Needs to be under Set for it to work
-	//			w.WriteHeader(http.StatusOK)
-	//			fmt.Fprint(w, string(score.GetScore(db)))
-	//			return
-	//		case "POST":
-	//			w.WriteHeader(http.StatusCreated)
-	//			score.SetScore(r, db)
-	//			fmt.Fprint(w, "Test")
-	//			return
-	//		default:
-	//			isValidHttpMethod("GET", w, r)
-	//			fmt.Fprint(w, "Method not allowed")
-	//		}
-	//	})
-	//
-	//	fmt.Printf("Starting server at port 8091\n")
-	//	if err := http.ListenAndServe(":8091", nil); err != nil {
-	//		log.Fatal(err)
-	//	}
 }
 
 func isValidHttpMethod(method string, w http.ResponseWriter, r *http.Request) bool {
@@ -111,4 +89,28 @@ func isValidHttpMethod(method string, w http.ResponseWriter, r *http.Request) bo
 		return false
 	}
 	return true
+}
+
+func useGRPC(db *sql.DB) {
+	var grpcServer = grpc.NewServer()
+	var lis net.Listener
+	var err error
+
+	// //Todo: Eventually make port an environment variable
+	lis, err = net.Listen("tcp", fmt.Sprintf("localhost:%d", 9001))
+	if err != nil {
+		log.Fatal("\nUh oh could not server at %d\n", 9001)
+	}
+	//initiate scoredb
+	var sd = database.ScoreDatabase{}
+
+	scorePB.RegisterScoreServiceServer(grpcServer, &server{
+		db: db,
+		sd: &sd,
+	})
+	fmt.Println("Listening on port 9001")
+	err = grpcServer.Serve(lis)
+	if err != nil {
+		log.Fatal("grpc server fail")
+	}
 }

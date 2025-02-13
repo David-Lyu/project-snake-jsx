@@ -3,32 +3,57 @@ package environment
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 )
 
-func GetEnvFile(rootPath string) []string{
+func GetMainPath() string {
+	var isNotBuild = GetGoRunFlag()
+	if isNotBuild != "" {
+		return ""
+	}
+	var mainPath, error = os.Executable()
+	if error != nil {
+		log.Fatal("main file")
+	}
 
-	// var readFile, errReadFile = os.ReadFile(pwd + "/.env")
-	var file, err = os.Open(rootPath + "/.env")
+	var prefix string
+	if mainPath[len(mainPath)-4:] == "main" {
+		prefix = mainPath[:len(mainPath)-4]
+	}
+	return prefix
+}
+func GetEnvFile() []string {
 
-	if(err != nil) {
+	var prefix = GetMainPath()
+	var file, err = os.Open(prefix + ".env")
+	var reader = bufio.NewReader(file)
+	var str string
+	var lines = make([]string, 0)
+
+	file.Seek(0, os.O_RDONLY)
+	defer file.Close()
+
+	if err != nil {
 		fmt.Print("some sort of error")
 	}
 
-	// fmt.Printf("readFile: %v\n", file)
-	var scanner = bufio.NewScanner(file)
-	lines := make([]string, 0)
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
+	for {
+		str, err = reader.ReadString('\n')
+		if err != nil {
+			break
+		}
+		lines = append(lines, str)
 	}
 
-	return lines;
+	file.Seek(0, os.O_RDONLY)
+	return lines
 }
 
 func StoreEnvironment(lines []string) {
-	for _ , line := range lines {
-		var prefix, suffix, _ = strings.Cut(line,"=")
-		os.Setenv(prefix,suffix)
+	for _, line := range lines {
+		var prefix, suffix, _ = strings.Cut(line, "=")
+		os.Setenv(prefix, suffix)
 	}
 }
