@@ -12,8 +12,7 @@ import (
 type ScoreView struct{}
 
 func (sv ScoreView) GetScore(db *sql.DB) []byte {
-	var scoreDB = database.ScoreDatabase{}
-	var results = scoreDB.GetScore(db)
+	var results = database.GetScore(db)
 	var json, err = encodeScoreJSONBody(results)
 
 	if err != nil {
@@ -35,9 +34,9 @@ func (sv ScoreView) SetScore(r *http.Request, db *sql.DB) {
 	database.SetScore(db, score)
 }
 
-func getScoreJSONBody(r *http.Request) (score snakeTypes.Scores, message string, err error) {
+func getScoreJSONBody(r *http.Request) (score snakeTypes.Score, message string, err error) {
 	decoder := json.NewDecoder(r.Body)
-	var t snakeTypes.Scores
+	var t snakeTypes.Score
 	message = "success"
 	err = decoder.Decode(&t)
 	if t.Score == 0 || t.User == "" {
@@ -47,7 +46,7 @@ func getScoreJSONBody(r *http.Request) (score snakeTypes.Scores, message string,
 	return t, message, err
 }
 
-func encodeScoreJSONBody(scores *[10]snakeTypes.Scores) ([]byte, error) {
+func encodeScoreJSONBody(scores *[10]snakeTypes.Score) ([]byte, error) {
 	// var test = []snakeTypes.Scores{}
 	// for i := 0; i < len(scores); i++ {
 	// 	test = append(test, scores[i])
