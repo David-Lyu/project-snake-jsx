@@ -27,6 +27,10 @@ func SetScore(r *http.Request, db *sql.DB) {
 	if message == "error" && err == nil {
 		err = errors.New("Malformed Error")
 	}
+
+	if err != nil {
+		//log error here
+	}
 	//Todo check if user exists with ID
 
 	database.SetScore(db, score)

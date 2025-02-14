@@ -12,7 +12,7 @@ import (
 type ScoreDatabase struct{}
 
 func GetScore(db *sql.DB) *[10]types.Score {
-	var query = "SELECT * FROM score LIMIT 10;"
+	var query = "SELECT * FROM score ORDER BY id LIMIT 10 ;"
 	//can't figure out how to return null or empty array. I don't want to use slice
 	var response = [10]types.Score{}
 	var rows, err = db.Query(query)
@@ -39,7 +39,7 @@ func GetScore(db *sql.DB) *[10]types.Score {
 }
 
 func SetScore(db *sql.DB, score types.Score) bool {
-	var query = "INSERT INTO score(score, user) VALUES (?, ?);"
+	var query = "INSERT OR REPLACE INTO score(entity_id, score, user) VALUES (?,?,?);"
 
 	var statement, err = db.Prepare(query)
 	if err != nil {
