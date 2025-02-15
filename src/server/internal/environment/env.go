@@ -44,7 +44,7 @@ func GetEnvFile() []string {
 		if err != nil {
 			break
 		}
-		lines = append(lines, str)
+		lines = append(lines, strings.Trim(str, "\n"))
 	}
 
 	file.Seek(0, os.O_RDONLY)

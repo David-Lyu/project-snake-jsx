@@ -12,7 +12,7 @@ func Database() (*sql.DB, error) {
 	path := environment.GetDBPath()
 
 	if path == "" {
-		path = environment.GetDefaultPath() + "/api/database/"
+		path = environment.GetDefaultPath()
 	}
 	db, err := getDatabase(path)
 	if err != nil {

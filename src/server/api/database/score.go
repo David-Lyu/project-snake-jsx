@@ -12,7 +12,7 @@ import (
 type ScoreDatabase struct{}
 
 func GetScore(db *sql.DB) *[10]types.Score {
-	var query = "SELECT * FROM score ORDER BY id LIMIT 10 ;"
+	var query = "SELECT * FROM score ORDER BY score LIMIT 10 ;"
 	//can't figure out how to return null or empty array. I don't want to use slice
 	var response = [10]types.Score{}
 	var rows, err = db.Query(query)
@@ -39,14 +39,29 @@ func GetScore(db *sql.DB) *[10]types.Score {
 }
 
 func SetScore(db *sql.DB, score types.Score) bool {
-	var query = "INSERT OR REPLACE INTO score(entity_id, score, user) VALUES (?,?,?);"
+	var query = ""
+	if score.Id == 0 {
+		//Insert
+		query = "INSERT INTO score(score, user) VALUES (?,?);"
+	} else {
+		//Update
+		query = "REPLACE INTO score(id, score, user) VALUES (?,?,?);"
+	}
 
 	var statement, err = db.Prepare(query)
 	if err != nil {
 		snakeLogger.LogApp("error", err)
 		return false
 	}
-	resp, err := statement.Exec(score.Score, score.User)
+
+	var resp sql.Result
+	if score.Id == 0 {
+		resp, err = statement.Exec(score.Score, score.User)
+
+	} else {
+		resp, err = statement.Exec(score.Id, score.Score, score.User)
+
+	}
 	if err != nil || resp == nil {
 		if err == nil {
 			err = errors.New("No response")
