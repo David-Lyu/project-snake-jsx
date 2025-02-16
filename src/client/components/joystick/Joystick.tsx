@@ -1,6 +1,6 @@
-import { MouseEventHandler } from 'react';
+import React from "react";
 
-type Direction = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
+type Direction = "ArrowUp" | "ArrowDown" | "ArrowLeft" | "ArrowRight";
 
 type Props = {
   setDirection: React.Dispatch<React.SetStateAction<Direction>>;
@@ -26,7 +26,8 @@ export default function Joystick(props: Props) {
       <button
         onClick={handleUserInput}
         className="joy-right"
-        value="ArrowRight">
+        value="ArrowRight"
+      >
         <svg viewBox="0 0 12 12">
           <polygon points="0 0, 12 6, 0 12" />
         </svg>

@@ -1,23 +1,23 @@
-import { Signal, signal } from '@preact/signals';
-import { SnakeBody } from '../../types/boardgame';
-import { Dimension } from '../../types/types';
+import { Signal, signal } from "@preact/signals";
+import { SnakeBody } from "../../types/boardgame";
+import { Dimension } from "../../types/types";
 
 export default class Snake {
   snakeBody: SnakeBody = {
     next: null,
     last: null,
-    coord: [0, 0]
+    coord: [0, 0],
   };
 
   snakeSegSize: Dimension = [10, 10];
-  direction: 'left' | 'right' | 'up' | 'down' = 'left';
+  direction: "left" | "right" | "up" | "down" = "left";
   velocity: number = 0;
 
   constructor(
     snakeSize: number = 3,
     startCoords: Dimension = [0, 0],
     snakeDimensions: Dimension = [10, 10],
-    direction: 'left' | 'right' | 'up' | 'down' = 'left'
+    direction: "left" | "right" | "up" | "down" = "left",
   ) {
     this.snakeBody.coord = startCoords;
     this.snakeSegSize = snakeDimensions;
@@ -40,7 +40,7 @@ export default class Snake {
       const newSeg: SnakeBody = {
         next: null,
         last: null,
-        coord: [x_coord, y_coord]
+        coord: [x_coord, y_coord],
       };
 
       this.snakeBody.last.next = newSeg;
@@ -96,7 +96,7 @@ export default class Snake {
       tempSnake.next = {
         next: null,
         last: null,
-        coord: [tempSnake.coord[0] + this.snakeSegSize[0], tempSnake.coord[1]]
+        coord: [tempSnake.coord[0] + this.snakeSegSize[0], tempSnake.coord[1]],
       };
       //add the last snake
       if (snakeSize === 1) this.snakeBody.last = tempSnake;
@@ -106,25 +106,25 @@ export default class Snake {
 
   getNextSnakeCoord(): Dimension {
     switch (this.direction) {
-      case 'up':
+      case "up":
         return [
           this.snakeBody.coord[0],
-          this.snakeBody.coord[1] - this.snakeSegSize[1]
+          this.snakeBody.coord[1] - this.snakeSegSize[1],
         ];
-      case 'down':
+      case "down":
         return [
           this.snakeBody.coord[0],
-          this.snakeBody.coord[1] + this.snakeSegSize[1]
+          this.snakeBody.coord[1] + this.snakeSegSize[1],
         ];
-      case 'left':
+      case "left":
         return [
           this.snakeBody.coord[0] - this.snakeSegSize[0],
-          this.snakeBody.coord[1]
+          this.snakeBody.coord[1],
         ];
-      case 'right':
+      case "right":
         return [
           this.snakeBody.coord[0] + this.snakeSegSize[0],
-          this.snakeBody.coord[1]
+          this.snakeBody.coord[1],
         ];
     }
   }
@@ -133,7 +133,7 @@ export default class Snake {
     this.snakeBody = {
       next: null,
       last: null,
-      coord: [0, 0]
+      coord: [0, 0],
     };
 
     this.snakeSegSize = [0, 0];

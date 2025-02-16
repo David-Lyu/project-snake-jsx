@@ -61,6 +61,7 @@ func main() {
 		switch r.Method {
 		case "GET":
 			w.Header().Set("Content-Type", "application/json")
+
 			//Needs to be under Set for it to work
 			w.WriteHeader(http.StatusOK)
 			fmt.Fprint(w, string(scoreModel.GetScore(db)))

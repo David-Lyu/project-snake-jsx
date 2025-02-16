@@ -1,9 +1,10 @@
-import { userState } from './user/user';
-import { Store } from '../types/types';
-import { snakeState } from './snake/snake';
-import { boardGameState } from './boardGame/boardGameState';
-import { canvasState } from './canvasState/canvasState';
-import scoreboard from './scoreboard/scoreboard';
+import { userState } from "./user/user";
+import { Store } from "../types/types";
+import { snakeState } from "./snake/snake";
+import { boardGameState } from "./boardGame/boardGameState";
+import { canvasState } from "./canvasState/canvasState";
+import scoreboard from "./scoreboard/scoreboard";
+import { globalScoresState } from "./scoreboard/globalScores";
 
 export default function createAppState(): Store {
   return {
@@ -11,6 +12,7 @@ export default function createAppState(): Store {
     snake: snakeState,
     boardGame: boardGameState,
     canvasState: canvasState,
-    scoreboard
+    scoreboard,
+    globalScores: globalScoresState,
   };
 }

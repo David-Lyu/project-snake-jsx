@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Signal } from '@preact/signals';
-import Snake from '../store/snake/snake';
-import BoardGame from '../store/boardGame/boardGameState';
-import CanvasState from '../store/canvasState/canvasState';
-import scoreboard from '../store/scoreboard/scoreboard';
+import { Signal } from "@preact/signals";
+import Snake from "../store/snake/snake";
+import BoardGame from "../store/boardGame/boardGameState";
+import CanvasState from "../store/canvasState/canvasState";
+import scoreboard from "../store/scoreboard/scoreboard";
 
 //Store (is it needed?)
 export type Store = {
@@ -12,6 +12,7 @@ export type Store = {
   boardGame: Signal<BoardGame>;
   canvasState: Signal<CanvasState>;
   scoreboard: typeof scoreboard;
+  globalScores: Signal<Score[]>;
 };
 
 // Start Page
@@ -28,4 +29,8 @@ type ScoreBoard = {
   scores: User[];
 };
 
+export type Score = {
+  score: number;
+  user: string;
+};
 //Snake Game

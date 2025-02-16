@@ -1,6 +1,7 @@
 // import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import React from 'react';
+import { Link } from "react-router-dom";
+import React from "react";
+import GlobalScores from "../../components/globalScores/globalScores";
 export default function HomePage() {
   // const [isDisclaimerClicked, setIsDisclaimerClicked] = useState(false);
 
@@ -15,9 +16,9 @@ export default function HomePage() {
           <span className="E">E</span>
         </h1>
         <h6>Please choose the following options:</h6>
-        <button disabled={true}>Login/Sign up</button>
+        <section className="highscores"></section>
         <Link to="/play">Play Game</Link>
-        <div className="scoreboard" id="scoreboard-start-screen"></div>
+        <GlobalScores />
       </div>
       <section className="home-page-disclaimer">
         Disclaimer: This is used only for demonstration purposes and is still in
