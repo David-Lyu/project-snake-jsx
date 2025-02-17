@@ -7,7 +7,7 @@ type Score = {
 };
 
 export default function GlobalScores() {
-  const { isGlobalScoresOpen } = useContext(AppState);
+  const { globalScores: store } = useContext(AppState);
   const [globalScores, setGlobalScores] = useState([] as Score[]);
   useEffect(() => {
     // const headers = {};
@@ -30,7 +30,7 @@ export default function GlobalScores() {
     setGlobalScores([...tempData]);
   }, []);
   return (
-    isGlobalScoresOpen.value && (
+    store.isOpen.peek() && (
       <table className="global-scores-container">
         <thead>
           <tr>

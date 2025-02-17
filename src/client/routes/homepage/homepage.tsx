@@ -1,6 +1,7 @@
 // import { useState } from 'react';
 import { Link } from "react-router-dom";
 import React from "react";
+import { globalScores } from "../../store/scoreboard/globalScores";
 export default function HomePage() {
   // const [isDisclaimerClicked, setIsDisclaimerClicked] = useState(false);
 
@@ -15,7 +16,15 @@ export default function HomePage() {
           <span className="E">E</span>
         </h1>
         <h6>Please choose the following options:</h6>
-        <section className="highscores"></section>
+        <button
+          onClick={() => {
+            console.log(globalScores);
+            globalScores.isOpen.value = !globalScores.isOpen.value;
+          }}
+          className="global-scores"
+        >
+          Show Global Scores
+        </button>
         <Link to="/play">Play Game</Link>
       </div>
       <section className="home-page-disclaimer">

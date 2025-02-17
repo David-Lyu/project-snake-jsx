@@ -1,3 +1,5 @@
-import { Signal, signal } from "@preact/signals";
+import { signal } from "@preact/signals";
 
-export const isGlobalScoresOpen: Signal<boolean> = signal(false);
+export const globalScores = {
+  isOpen: signal(false),
+};

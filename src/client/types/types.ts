@@ -12,7 +12,7 @@ export type Store = {
   boardGame: Signal<BoardGame>;
   canvasState: Signal<CanvasState>;
   scoreboard: typeof scoreboard;
-  isGlobalScoresOpen: Signal<boolean>;
+  globalScores: GlobalScores;
 };
 
 // Start Page
@@ -32,5 +32,9 @@ type ScoreBoard = {
 export type Score = {
   score: number;
   user: string;
+};
+
+export type GlobalScores = {
+  isOpen: Signal<boolean>;
 };
 //Snake Game
