@@ -4,7 +4,7 @@ import { snakeState } from "./snake/snake";
 import { boardGameState } from "./boardGame/boardGameState";
 import { canvasState } from "./canvasState/canvasState";
 import scoreboard from "./scoreboard/scoreboard";
-import { globalScoresState } from "./scoreboard/globalScores";
+import { isGlobalScoresOpen } from "./scoreboard/globalScores";
 
 export default function createAppState(): Store {
   return {
@@ -13,6 +13,6 @@ export default function createAppState(): Store {
     boardGame: boardGameState,
     canvasState: canvasState,
     scoreboard,
-    globalScores: globalScoresState,
+    isGlobalScoresOpen,
   };
 }

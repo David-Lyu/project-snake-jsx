@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppState } from "../../main";
 
 type Score = {
@@ -7,7 +7,8 @@ type Score = {
 };
 
 export default function GlobalScores() {
-  const { globalScores } = useContext(AppState);
+  const { isGlobalScoresOpen } = useContext(AppState);
+  const [globalScores, setGlobalScores] = useState([] as Score[]);
   useEffect(() => {
     // const headers = {};
     // const url = "http://localhost:8091/api/score";
@@ -26,27 +27,28 @@ export default function GlobalScores() {
       });
     }
 
-    globalScores.value = [...tempData];
+    setGlobalScores([...tempData]);
   }, []);
   return (
-    <table className="global-scores-container">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Score</th>
-        </tr>
-      </thead>
-      <tbody>
-        {globalScores.value.map((score) => {
-          console.log(score);
-          return (
-            <tr>
-              <td>{score.user}</td>
-              <td>{score.score}</td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    isGlobalScoresOpen.value && (
+      <table className="global-scores-container">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          {globalScores.map((score, i) => {
+            return (
+              <tr key={score.user + i}>
+                <td>{score.user}</td>
+                <td>{score.score}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    )
   );
 }

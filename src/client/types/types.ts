@@ -12,7 +12,7 @@ export type Store = {
   boardGame: Signal<BoardGame>;
   canvasState: Signal<CanvasState>;
   scoreboard: typeof scoreboard;
-  globalScores: Signal<Score[]>;
+  isGlobalScoresOpen: Signal<boolean>;
 };
 
 // Start Page

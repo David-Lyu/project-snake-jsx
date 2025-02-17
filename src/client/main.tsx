@@ -13,6 +13,7 @@ import LocalStorageAdapter from "./modules/localStorage";
 
 //types
 import { Store } from "./types/types";
+import GlobalScores from "./components/globalScores/globalScores";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,7 @@ new LocalStorageAdapter();
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <AppState.Provider value={createAppState()}>
+      <GlobalScores />
       <App router={router}></App>
     </AppState.Provider>
   </React.StrictMode>,

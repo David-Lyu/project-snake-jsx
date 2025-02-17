@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { AppState } from '../../main';
+import React, { useContext, useEffect, useState } from "react";
+import { AppState } from "../../main";
 
 type Props = {
   hasGameStarted: boolean;
@@ -7,7 +7,7 @@ type Props = {
 
 export default function Scoreboard({ hasGameStarted }: Props) {
   const { scoreboard } = useContext(AppState);
-  const [time, setTime] = useState('00:00');
+  const [time, setTime] = useState("00:00");
 
   useEffect(() => {
     if (hasGameStarted && !scoreboard.intervalId) {
@@ -16,12 +16,12 @@ export default function Scoreboard({ hasGameStarted }: Props) {
         setTime(formatTime(scoreboard.time.value));
       }, 1000);
     } else {
-      setTime('00:00');
+      setTime("00:00");
     }
     () => {
       clearInterval(scoreboard.intervalId);
       scoreboard.intervalId = 0;
-      setTime('00:00');
+      setTime("00:00");
     };
   }, [hasGameStarted]);
 
@@ -37,19 +37,19 @@ export default function Scoreboard({ hasGameStarted }: Props) {
 function formatTime(time: number) {
   const seconds = time % 60;
   const minutes = Math.floor(time / 60);
-  let secondsString = '';
-  let minutesString = '';
+  let secondsString = "";
+  let minutesString = "";
 
   if (seconds < 10) {
     secondsString = `0${seconds}`;
   } else {
-    secondsString = '' + seconds;
+    secondsString = "" + seconds;
   }
 
   if (minutes < 10) {
     minutesString = `0${minutes}`;
   } else {
-    minutesString = '' + minutes;
+    minutesString = "" + minutes;
   }
-  return minutesString + ':' + secondsString;
+  return minutesString + ":" + secondsString;
 }
