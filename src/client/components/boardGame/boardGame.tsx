@@ -4,38 +4,38 @@ import React, {
   useEffect,
   useLayoutEffect,
   useRef,
-  useState
-} from 'react';
-import { SnakeBody } from '../../types/boardgame';
-import { AppState } from '../../main';
-import Snake, { snakeState } from '../../store/snake/snake';
-import CanvasState, { canvasState } from '../../store/canvasState/canvasState';
+  useState,
+} from "react";
+import { SnakeBody } from "../../types/boardgame";
+import { AppState } from "../../main";
+import Snake, { snakeState } from "../../store/snake/snake";
+import CanvasState, { canvasState } from "../../store/canvasState/canvasState";
 import BoardGameState, {
-  boardGameState
-} from '../../store/boardGame/boardGameState';
-import scoreboardState from '../../store/scoreboard/scoreboard';
-import Joystick from '../joystick/Joystick';
-import LocalStorageAdapter from '../../modules/localStorage';
+  boardGameState,
+} from "../../store/boardGame/boardGameState";
+import scoreboardState from "../../store/scoreboard/scoreboard";
+import Joystick from "../joystick/Joystick";
+import LocalStorageAdapter from "../../modules/localStorage";
 
 type Props = {
   setHasGameStarted: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 //Used in joystick need to refactor
-type Direction = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
+type Direction = "ArrowUp" | "ArrowDown" | "ArrowLeft" | "ArrowRight";
 
 //Grab singleton for adapter
-const localStorage = LocalStorageAdapter.GetInstance()
+const localStorage = LocalStorageAdapter.GetInstance();
 
 //Todo: Need to open input when user is in mobile
 export default function BoardGame(props: Props) {
   const {
     snake: snakeState,
     boardGame: boardGameState,
-    canvasState
+    canvasState,
   } = useContext(AppState);
   const [canvasSize, setCanvasSize] = useState<number[]>([0, 0]);
-  const [direction, setDirection] = useState<Direction>('ArrowLeft');
+  const [direction, setDirection] = useState<Direction>("ArrowLeft");
   const boardGameRef: React.Ref<HTMLCanvasElement> = useRef(null);
   const ctx = useRef<CanvasRenderingContext2D | null>(null);
 
@@ -48,7 +48,7 @@ export default function BoardGame(props: Props) {
       if (!setSnake(ctx.current!)) {
         return resetGame(
           canvasState.value.cancelAnimationFrame,
-          props.setHasGameStarted
+          props.setHasGameStarted,
         );
       }
       canvasState.value.lastTime = timeStamp;
@@ -62,15 +62,15 @@ export default function BoardGame(props: Props) {
      */
     if (
       snakeState.value.snakeBody.coord[0] <=
-      -snakeState.value.snakeSegSize[0] ||
+        -snakeState.value.snakeSegSize[0] ||
       snakeState.value.snakeBody.coord[0] >= canvasState.value.width ||
       snakeState.value.snakeBody.coord[1] <=
-      -snakeState.value.snakeSegSize[1] ||
+        -snakeState.value.snakeSegSize[1] ||
       snakeState.value.snakeBody.coord[1] >= canvasState.value.height
     ) {
       resetGame(
         canvasState.value.cancelAnimationFrame,
-        props.setHasGameStarted
+        props.setHasGameStarted,
       );
     }
   }
@@ -95,12 +95,12 @@ export default function BoardGame(props: Props) {
       snakeState.value = new Snake(
         4,
         [canvasState.value.width / 2, canvasState.value.height / 2],
-        [canvasState.value.width / 20, canvasState.value.height / 20]
+        [canvasState.value.width / 20, canvasState.value.height / 20],
       );
 
       boardGameState.value = new BoardGameState([
         canvasState.value.width,
-        canvasState.value.height
+        canvasState.value.height,
       ]);
 
       boardGameState.value?.createFood(snakeState.value!);
@@ -109,11 +109,11 @@ export default function BoardGame(props: Props) {
       ctx.current = drawBoard(boardGameRef.current);
 
       animateSnake(0);
-      window.addEventListener('keydown', handleUserInput);
+      window.addEventListener("keydown", handleUserInput);
 
       return () => {
         window.cancelAnimationFrame(canvasState.value.cancelAnimationFrame);
-        window.removeEventListener('keydown', handleUserInput);
+        window.removeEventListener("keydown", handleUserInput);
       };
     }
   }, [boardGameRef]);
@@ -126,7 +126,7 @@ export default function BoardGame(props: Props) {
 
   useEffect(() => {
     scoreboardState.highScore.value = localStorage.getHighscore();
-  }, [])
+  }, []);
   return (
     <section className="boardgame-container">
       <canvas ref={boardGameRef} width={canvasSize[0]} height={canvasSize[1]}>
@@ -140,20 +140,20 @@ export default function BoardGame(props: Props) {
 /** HELPER FUNCTIONS **/
 
 function drawBoard(canvas: HTMLCanvasElement) {
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
   if (ctx) {
     ctx.beginPath();
-    ctx.fillStyle = 'rgb(165,165,165)';
+    ctx.fillStyle = "rgb(165,165,165)";
     ctx.fillRect(0, 0, canvasState.value.width, canvasState.value.height);
     ctx.closePath();
 
     ctx.beginPath();
-    ctx.fillStyle = 'rgb(255,0,0)';
+    ctx.fillStyle = "rgb(255,0,0)";
     ctx.fillRect(
       boardGameState.value.foodCoord[0],
       boardGameState.value.foodCoord[1],
       snakeState.value.snakeSegSize[0],
-      snakeState.value.snakeSegSize[1]
+      snakeState.value.snakeSegSize[1],
     );
   }
   return ctx;
@@ -163,12 +163,12 @@ function drawSnake(ctx: CanvasRenderingContext2D) {
   let snakeBody: SnakeBody | null = snakeState.value.snakeBody;
   while (snakeBody) {
     ctx.beginPath();
-    ctx.fillStyle = 'green';
+    ctx.fillStyle = "green";
     ctx.fillRect(
       snakeBody.coord[0],
       snakeBody.coord[1],
       snakeState.value.snakeSegSize[0],
-      snakeState.value.snakeSegSize[1]
+      snakeState.value.snakeSegSize[1],
     );
     snakeBody = snakeBody!.next;
   }
@@ -192,7 +192,9 @@ function setSnake(ctx: CanvasRenderingContext2D) {
     snakeBody.coord[1] === boardGameState.value.foodCoord[1]
   ) {
     scoreboardState.score.value += boardGameState.value.snakePoints;
-    scoreboardState.highScore.value = localStorage.updateHighscore(scoreboardState.score.value)
+    scoreboardState.highScore.value = localStorage.updateHighscore(
+      scoreboardState.score.value,
+    );
     snakeState.value.addSnakeBody(...lastSnakeBody);
     boardGameState.value.createFood(snakeState.value);
   }
@@ -205,28 +207,28 @@ function setSnake(ctx: CanvasRenderingContext2D) {
 function onKeyDown(
   e: KeyboardEvent,
   snakeState: Snake,
-  canvasState: CanvasState
+  canvasState: CanvasState,
 ) {
   if (!canvasState.canAcceptKeyDown) {
     return;
   }
 
   switch (e.key) {
-    case 'w':
-    case 'ArrowUp':
-      if (snakeState.direction !== 'down') snakeState.direction = 'up';
+    case "w":
+    case "ArrowUp":
+      if (snakeState.direction !== "down") snakeState.direction = "up";
       break;
-    case 's':
-    case 'ArrowDown':
-      if (snakeState.direction !== 'up') snakeState.direction = 'down';
+    case "s":
+    case "ArrowDown":
+      if (snakeState.direction !== "up") snakeState.direction = "down";
       break;
-    case 'a':
-    case 'ArrowLeft':
-      if (snakeState.direction !== 'right') snakeState.direction = 'left';
+    case "a":
+    case "ArrowLeft":
+      if (snakeState.direction !== "right") snakeState.direction = "left";
       break;
-    case 'd':
-    case 'ArrowRight':
-      if (snakeState.direction !== 'left') snakeState.direction = 'right';
+    case "d":
+    case "ArrowRight":
+      if (snakeState.direction !== "left") snakeState.direction = "right";
       break;
     default:
       null;
@@ -236,7 +238,9 @@ function onKeyDown(
 
 function resetGame(
   cancelAnimation: number,
-  setHasGameStarted: React.Dispatch<React.SetStateAction<boolean>>
+  setHasGameStarted: React.Dispatch<React.SetStateAction<boolean>>,
+  // Todo: Get globalScores in here.
+  // globalScores: [],
 ) {
   window.cancelAnimationFrame(cancelAnimation);
   clearInterval(scoreboardState.intervalId);
@@ -245,4 +249,9 @@ function resetGame(
   scoreboardState.score.value = 0;
   //make modal and play again?
   setHasGameStarted(false);
+}
+
+function checkGlobalScores(score) {
+  // If is greater than any of the global scores...
+  // Send to backend... create the correct header to disallow abuse
 }
