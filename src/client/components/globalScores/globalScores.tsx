@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppState } from "../../main";
+import { useSignals } from "@preact/signals-react/runtime";
 
 type Score = {
   score: number;
@@ -7,6 +8,7 @@ type Score = {
 };
 
 export default function GlobalScores() {
+  useSignals();
   const { globalScores: store } = useContext(AppState);
   const [globalScores, setGlobalScores] = useState([] as Score[]);
   useEffect(() => {
@@ -29,8 +31,9 @@ export default function GlobalScores() {
 
     setGlobalScores([...tempData]);
   }, []);
+
   return (
-    store.isOpen.peek() && (
+    store.isOpen.value && (
       <table className="global-scores-container">
         <thead>
           <tr>

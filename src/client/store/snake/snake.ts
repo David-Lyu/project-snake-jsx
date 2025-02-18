@@ -1,4 +1,4 @@
-import { Signal, signal } from "@preact/signals";
+import { Signal, signal } from "@preact/signals-react";
 import { SnakeBody } from "../../types/boardgame";
 import { Dimension } from "../../types/types";
 

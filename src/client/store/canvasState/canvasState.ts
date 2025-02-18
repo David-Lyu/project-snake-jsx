@@ -1,4 +1,4 @@
-import { signal } from '@preact/signals';
+import { signal } from "@preact/signals-react";
 
 export default class CanvasState {
   width: number = 0;

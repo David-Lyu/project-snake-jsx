@@ -1,9 +1,10 @@
-// import { useState } from 'react';
 import { Link } from "react-router-dom";
-import React from "react";
-import { globalScores } from "../../store/scoreboard/globalScores";
+import React, { useContext } from "react";
+import { AppState } from "../../main";
 export default function HomePage() {
+  const { globalScores } = useContext(AppState);
   // const [isDisclaimerClicked, setIsDisclaimerClicked] = useState(false);
+  //:w
 
   return (
     <div className="start-screen container">
@@ -18,7 +19,7 @@ export default function HomePage() {
         <h6>Please choose the following options:</h6>
         <button
           onClick={() => {
-            console.log(globalScores);
+            // console.log(globalScores);
             globalScores.isOpen.value = !globalScores.isOpen.value;
           }}
           className="global-scores"

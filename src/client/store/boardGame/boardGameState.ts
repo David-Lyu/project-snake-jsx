@@ -1,6 +1,6 @@
-import { Signal, signal } from '@preact/signals';
-import Snake, { snakeState } from '../snake/snake';
-import { Dimension } from '../../types/types';
+import { Signal, signal } from "@preact/signals-react";
+import Snake, { snakeState } from "../snake/snake";
+import { Dimension } from "../../types/types";
 
 export default class BoardGameState {
   //create x,y cooord type
@@ -16,13 +16,13 @@ export default class BoardGameState {
       Math.round(
         Math.random() *
           ((this.dimensions[0] - snakeState.value!.snakeSegSize[0]) /
-            snakeState.value!.snakeSegSize[0])
+            snakeState.value!.snakeSegSize[0]),
       ) * snakeState.value!.snakeSegSize[0];
     const y_coord =
       Math.round(
         Math.random() *
           ((this.dimensions[0] - snakeState.value!.snakeSegSize[0]) /
-            snakeState.value!.snakeSegSize[1])
+            snakeState.value!.snakeSegSize[1]),
       ) * snakeState.value!.snakeSegSize[1];
 
     //might move to its own method or make it a while loop.
@@ -41,5 +41,5 @@ export default class BoardGameState {
 }
 
 export const boardGameState: Signal<BoardGameState> = signal(
-  new BoardGameState()
+  new BoardGameState(),
 );
