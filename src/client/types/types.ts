@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Signal } from "@preact/signals";
+import { Signal } from "@preact/signals-react";
 import Snake from "../store/snake/snake";
 import BoardGame from "../store/boardGame/boardGameState";
 import CanvasState from "../store/canvasState/canvasState";

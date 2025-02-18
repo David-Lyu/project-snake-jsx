@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppState } from "../../main";
+import ToggleGlobalScoresButton from "../globalScores/toggleGlobalScoresButton";
 
 type Props = {
   hasGameStarted: boolean;
@@ -28,8 +29,9 @@ export default function Scoreboard({ hasGameStarted }: Props) {
   return (
     <section>
       <div>Time: {time}</div>
-      <div>Score:{scoreboard.score.value} </div>
+      <div>Score: {scoreboard.score.value} </div>
       <div>High Score: {scoreboard.highScore.value} </div>
+      <ToggleGlobalScoresButton />
     </section>
   );
 }

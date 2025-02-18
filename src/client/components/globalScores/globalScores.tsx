@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppState } from "../../main";
 import { useSignals } from "@preact/signals-react/runtime";
+import ToggleGlobalScoresButton from "./toggleGlobalScoresButton";
 
 type Score = {
   score: number;
@@ -35,25 +36,27 @@ export default function GlobalScores() {
   return (
     store.isOpen.value && (
       <section className="global-scores-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {globalScores.map((score, i) => {
-              return (
-                <tr key={score.user + i}>
-                  <td>{score.user}</td>
-                  <td>{score.score}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-        <button>Close High Score</button>
+        <div className="global-scores-body">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {globalScores.map((score, i) => {
+                return (
+                  <tr key={score.user + i}>
+                    <td>{score.user}</td>
+                    <td>{score.score}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <ToggleGlobalScoresButton />
+        </div>
       </section>
     )
   );

@@ -1,10 +1,8 @@
 import { Link } from "react-router-dom";
-import React, { useContext } from "react";
-import { AppState } from "../../main";
+import React from "react";
+import ToggleGlobalScoresButton from "../../components/globalScores/toggleGlobalScoresButton";
 export default function HomePage() {
-  const { globalScores } = useContext(AppState);
   // const [isDisclaimerClicked, setIsDisclaimerClicked] = useState(false);
-  //:w
 
   return (
     <div className="start-screen container">
@@ -17,15 +15,7 @@ export default function HomePage() {
           <span className="E">E</span>
         </h1>
         <h6>Please choose the following options:</h6>
-        <button
-          onClick={() => {
-            // console.log(globalScores);
-            globalScores.isOpen.value = !globalScores.isOpen.value;
-          }}
-          className="global-scores"
-        >
-          Show Global Scores
-        </button>
+        <ToggleGlobalScoresButton />
         <Link to="/play">Play Game</Link>
       </div>
       <section className="home-page-disclaimer">

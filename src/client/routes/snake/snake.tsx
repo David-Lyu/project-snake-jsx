@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom';
-import BoardGame from '../../components/boardGame/boardGame';
-import React, { useState } from 'react';
-import StartGameModal from '../../components/startGameModal/startGameModal';
-import Scoreboard from '../../components/scoreboard/scoreboard';
+import { Link } from "react-router-dom";
+import BoardGame from "../../components/boardGame/boardGame";
+import React, { useState } from "react";
+import StartGameModal from "../../components/startGameModal/startGameModal";
+import Scoreboard from "../../components/scoreboard/scoreboard";
 
 export default function Snake() {
   //honestly better to refactor and just use useState
@@ -18,6 +18,7 @@ export default function Snake() {
           <BoardGame setHasGameStarted={setHasGameStarted} />
         )}
       </div>
+      <Link to={"/"}> Go Back to home page</Link>
       <div className="container">
         <div className="row">
           <h1>How to Play:</h1>
