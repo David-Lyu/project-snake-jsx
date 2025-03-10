@@ -32,5 +32,6 @@
 **/dist
 **/package-lock.json
 **/._*
+src/client/._*
 LICENSE
 README.md

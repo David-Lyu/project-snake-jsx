@@ -13,15 +13,19 @@ export default function GlobalScores() {
   const { globalScores: store } = useContext(AppState);
   const [globalScores, setGlobalScores] = useState([] as Score[]);
   useEffect(() => {
+    const isProd = import.meta.env.PROD;
+    // Add headers to verify with server
     // const headers = {};
-    // const url = "http://localhost:8091/api/score";
-    // console.log(url);
-    // fetch(url)
-    //   .then((resp) => resp.json())
-    //   .then((data) => {
-    //     console.log(data);
-    //   })
-    //   .catch((err) => console.log(err));
+    const url = isProd
+      ? "http://localhost:8091/api/score"
+      : "https://snake.davidlyu.top/api/score";
+    console.log(url);
+    fetch(url)
+      .then((resp) => resp.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => console.log(err));
     const tempData: Score[] = [];
     for (let i = 0; i < 10; i++) {
       tempData.push({
