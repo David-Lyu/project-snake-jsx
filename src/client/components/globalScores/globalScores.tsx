@@ -15,13 +15,27 @@ export default function GlobalScores() {
   useEffect(() => {
     const isProd = import.meta.env.PROD;
     // Add headers to verify with server
-    // const headers = {};
     const url = isProd
-      ? "http://localhost:8091/api/score"
-      : "https://snake.davidlyu.top/api/score";
+      ? "https://snake.davidlyu.top/api/score"
+      : "http://localhost:8091/api/score";
     console.log(url);
-    fetch(url)
-      .then((resp) => resp.json())
+    const headers = {
+      // mode: "no-cors",
+      method: "GET",
+      "Content-type": "application/json",
+      // url,
+    };
+
+    console.log(headers);
+    fetch(url, headers)
+      .then((resp) => {
+        console.log(resp);
+        if (resp.ok) {
+          return resp.json();
+        } else {
+          return null;
+        }
+      })
       .then((data) => {
         console.log(data);
       })

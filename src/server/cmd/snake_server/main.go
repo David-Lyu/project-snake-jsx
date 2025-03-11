@@ -60,6 +60,11 @@ func main() {
 	http.HandleFunc("/api/score", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "GET":
+			if env.GetGoRunFlag() != "" {
+				w.Header().Set("Access-Control-Allow-Origin", "*")
+				w.Header().Set("Access-Control-Allow-Headers", "*")
+
+			}
 			w.Header().Set("Content-Type", "application/json")
 
 			//Needs to be under Set for it to work
