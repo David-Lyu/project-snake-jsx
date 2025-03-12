@@ -16,6 +16,7 @@ import BoardGameState, {
 import scoreboardState from "../../store/scoreboard/scoreboard";
 import Joystick from "../joystick/Joystick";
 import LocalStorageAdapter from "../../modules/localStorage";
+import { globalScores } from "../../store/scoreboard/globalScores";
 
 type Props = {
   setHasGameStarted: React.Dispatch<React.SetStateAction<boolean>>;
@@ -177,7 +178,7 @@ function drawSnake(ctx: CanvasRenderingContext2D) {
 }
 //split this out
 function setSnake(ctx: CanvasRenderingContext2D) {
-  let snakeBody: SnakeBody | null = snakeState.value.snakeBody;
+  const snakeBody: SnakeBody | null = snakeState.value.snakeBody;
   const lastSnakeBody: [number, number] = [...snakeBody.last!.coord];
   const nextCoords = snakeState.value.getNextSnakeCoord();
   if (snakeState.value.checkSnakeBodyCollision(...nextCoords)) {
@@ -251,7 +252,14 @@ function resetGame(
   setHasGameStarted(false);
 }
 
-function checkGlobalScores(score) {
-  // If is greater than any of the global scores...
-  // Send to backend... create the correct header to disallow abuse
+/**
+ * The score recieved from end of game.
+ * If the score is higher than the lowest score send the score over.
+ * @param score number
+ */
+function checkGlobalScores(score: number) {
+  if (score > globalScores.lowestScore.value.score) {
+    globalScores.lowestScore.value.score = score;
+    globalScores.sendScore.value = true;
+  }
 }

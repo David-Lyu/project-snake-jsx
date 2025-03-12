@@ -7,7 +7,6 @@ import scoreboard from "./scoreboard/scoreboard";
 import { globalScores } from "./scoreboard/globalScores";
 
 export default function createAppState(): Store {
-  console.log(globalScores.isOpen.value);
   return {
     user: userState,
     snake: snakeState,

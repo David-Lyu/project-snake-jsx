@@ -2,8 +2,6 @@ import React, { useContext, useState } from "react";
 import { AppState } from "../../main";
 import { useSignalEffect } from "@preact/signals-react";
 
-enum texts {}
-
 export default function ToggleGlobalScoresButton() {
   const { globalScores } = useContext(AppState);
 

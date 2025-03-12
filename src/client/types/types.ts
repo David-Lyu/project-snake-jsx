@@ -36,5 +36,7 @@ export type Score = {
 
 export type GlobalScores = {
   isOpen: Signal<boolean>;
+  lowestScore: Signal<Score>;
+  sendScore: Signal<boolean>;
 };
 //Snake Game

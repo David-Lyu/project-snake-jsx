@@ -12,44 +12,40 @@ export default function GlobalScores() {
   useSignals();
   const { globalScores: store } = useContext(AppState);
   const [globalScores, setGlobalScores] = useState([] as Score[]);
+
   useEffect(() => {
     const isProd = import.meta.env.PROD;
     // Add headers to verify with server
     const url = isProd
       ? "https://snake.davidlyu.top/api/score"
       : "http://localhost:8091/api/score";
-    console.log(url);
     const headers = {
-      // mode: "no-cors",
       method: "GET",
       "Content-type": "application/json",
-      // url,
     };
 
-    console.log(headers);
     fetch(url, headers)
       .then((resp) => {
-        console.log(resp);
         if (resp.ok) {
           return resp.json();
         } else {
-          return null;
+          throw Error("Could not get Scores");
         }
       })
       .then((data) => {
-        console.log(data);
+        setGlobalScores(data);
       })
-      .catch((err) => console.log(err));
-    const tempData: Score[] = [];
-    for (let i = 0; i < 10; i++) {
-      tempData.push({
-        score: 10 + i,
-        user: "test" + i,
+      .catch((err) => {
+        console.log(err);
       });
-    }
-
-    setGlobalScores([...tempData]);
   }, []);
+
+  useEffect(() => {
+    if (store.sendScore.value === true) {
+      //send score over
+      //add retrigger useEffect abover
+    }
+  }, [store.sendScore]);
 
   return (
     store.isOpen.value && (
