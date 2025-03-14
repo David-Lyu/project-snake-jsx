@@ -43,7 +43,11 @@ export default function GlobalScores() {
   useEffect(() => {
     if (store.sendScore.value === true) {
       //send score over
-      //add retrigger useEffect abover
+      //should retrigger above... but will just adjust locally
+      globalScores.pop();
+      globalScores.push(store.lowestScore.value);
+
+      store.sendScore.value = false;
     }
   }, [store.sendScore]);
 
@@ -61,7 +65,7 @@ export default function GlobalScores() {
             <tbody>
               {globalScores.map((score, i) => {
                 return (
-                  <tr key={score.user + i}>
+                  <tr key={"global_score" + score.user + i}>
                     <td>{score.user}</td>
                     <td>{score.score}</td>
                   </tr>
