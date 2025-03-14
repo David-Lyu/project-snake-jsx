@@ -1,13 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppState } from "../../main";
 import ToggleGlobalScoresButton from "../globalScores/toggleGlobalScoresButton";
+import { useSignals } from "@preact/signals-react/runtime";
 
 type Props = {
   hasGameStarted: boolean;
 };
 
 export default function Scoreboard({ hasGameStarted }: Props) {
-  const { scoreboard } = useContext(AppState);
+  useSignals();
+  const { scoreboard, globalScores } = useContext(AppState);
   const [time, setTime] = useState("00:00");
 
   useEffect(() => {
@@ -31,7 +33,7 @@ export default function Scoreboard({ hasGameStarted }: Props) {
       <div>Time: {time}</div>
       <div>Score: {scoreboard.score.value} </div>
       <div>High Score: {scoreboard.highScore.value} </div>
-      <ToggleGlobalScoresButton />
+      {!globalScores.isOpen.value && <ToggleGlobalScoresButton />}
     </section>
   );
 }
