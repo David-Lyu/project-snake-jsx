@@ -3,6 +3,7 @@ import BoardGame from "../../components/boardGame/boardGame";
 import React, { useState } from "react";
 import StartGameModal from "../../components/startGameModal/startGameModal";
 import Scoreboard from "../../components/scoreboard/scoreboard";
+import GlobalScoreUserInput from "../../components/globalScores/globalScoreUserInput";
 
 export default function Snake() {
   //honestly better to refactor and just use useState
@@ -17,6 +18,7 @@ export default function Snake() {
         ) : (
           <BoardGame setHasGameStarted={setHasGameStarted} />
         )}
+        <GlobalScoreUserInput />
       </div>
       <Link to={"/"}> Go Back to home page</Link>
       <div className="container">

@@ -58,6 +58,7 @@ func main() {
 
 	//Handles grabbing scores
 	http.HandleFunc("/api/score", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println(r.Method)
 		switch r.Method {
 		case "GET":
 			if env.GetGoRunFlag() != "" {
@@ -72,10 +73,23 @@ func main() {
 			fmt.Fprint(w, string(scoreModel.GetScore(db)))
 			return
 		case "POST":
-			w.WriteHeader(http.StatusCreated)
+			fmt.Println("Hello?")
+			if env.GetGoRunFlag() != "" {
+				w.Header().Set("Access-Control-Allow-Origin", "*")
+				w.Header().Set("Access-Control-Allow-Headers", "*")
+
+			}
+			w.Header().Set("Content-Type", "application/json")
 			scoreModel.SetScore(r, db)
+			w.WriteHeader(http.StatusCreated)
 			fmt.Fprint(w, "Test")
 			return
+		case "OPTIONS":
+			if env.GetGoRunFlag() != "" {
+				w.Header().Set("Access-Control-Allow-Origin", "*")
+				w.Header().Set("Access-Control-Allow-Headers", "*")
+
+			}
 		default:
 			isValidHttpMethod("GET", w, r)
 			fmt.Fprint(w, "Method not allowed")

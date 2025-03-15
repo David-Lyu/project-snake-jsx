@@ -17,6 +17,7 @@ import scoreboardState from "../../store/scoreboard/scoreboard";
 import Joystick from "../joystick/Joystick";
 import LocalStorageAdapter from "../../modules/localStorage";
 import { globalScores } from "../../store/scoreboard/globalScores";
+import GlobalScoreUserInput from "../globalScores/globalScoreUserInput";
 
 type Props = {
   setHasGameStarted: React.Dispatch<React.SetStateAction<boolean>>;
@@ -134,6 +135,7 @@ export default function BoardGame(props: Props) {
         No Game Available
       </canvas>
       <Joystick setDirection={setDirection} />
+      {/* <GlobalScoreUserInput /> */}
     </section>
   );
 }
@@ -247,6 +249,7 @@ function resetGame(
   clearInterval(scoreboardState.intervalId);
   scoreboardState.intervalId = 0;
   //need to use local storage set and grab high score
+  checkGlobalScores(scoreboardState.score.value);
   scoreboardState.score.value = 0;
   //make modal and play again?
   setHasGameStarted(false);

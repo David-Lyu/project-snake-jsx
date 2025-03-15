@@ -16,9 +16,7 @@ export default function GlobalScores() {
   useEffect(() => {
     const isProd = import.meta.env.PROD;
     // Add headers to verify with server
-    const url = isProd
-      ? "https://snake.davidlyu.top/api/score"
-      : "http://localhost:8091/api/score";
+    const url = isProd ? "/api/score" : "http://localhost:8091/api/score";
     const headers = {
       method: "GET",
       "Content-type": "application/json",
