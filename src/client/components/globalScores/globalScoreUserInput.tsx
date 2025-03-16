@@ -10,14 +10,15 @@ export default function GlobalScoreUserInput() {
   }, [store.globalScores.lowestScore]);
 
   function onSubmit(e: React.FormEvent) {
+    if (!store.globalScores.lowestScore.value.score) {
+      return;
+    }
     e.preventDefault();
 
     const body = JSON.stringify({
       user: inputRef.current?.value,
-      score: store.globalScores.lowestScore.value.score ? 10 : 69,
+      score: store.globalScores.lowestScore.value.score,
     });
-
-    console.log(new FormData(e.target as HTMLFormElement));
 
     const url = import.meta.env.PROD
       ? "/api/score"
@@ -25,7 +26,6 @@ export default function GlobalScoreUserInput() {
     const init = {
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
       },
       method: "POST",
       body,
@@ -39,13 +39,15 @@ export default function GlobalScoreUserInput() {
           throw Error("Could not get Scores");
         }
       })
-      .then((data) => {
-        console.log(data);
+      .then(() => {
+        // console.log(data);
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        store.globalScores.sendScore.value = false;
       });
-    console.log(e);
   }
   return (
     <section className="global-score-form">

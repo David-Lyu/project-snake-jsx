@@ -58,7 +58,6 @@ func main() {
 
 	//Handles grabbing scores
 	http.HandleFunc("/api/score", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println(r.Method)
 		switch r.Method {
 		case "GET":
 			if env.GetGoRunFlag() != "" {
@@ -73,7 +72,6 @@ func main() {
 			fmt.Fprint(w, string(scoreModel.GetScore(db)))
 			return
 		case "POST":
-			fmt.Println("Hello?")
 			if env.GetGoRunFlag() != "" {
 				w.Header().Set("Access-Control-Allow-Origin", "*")
 				w.Header().Set("Access-Control-Allow-Headers", "*")
@@ -82,7 +80,7 @@ func main() {
 			w.Header().Set("Content-Type", "application/json")
 			scoreModel.SetScore(r, db)
 			w.WriteHeader(http.StatusCreated)
-			fmt.Fprint(w, "Test")
+			fmt.Fprint(w, "{\"message\": \"Data Received\"}")
 			return
 		case "OPTIONS":
 			if env.GetGoRunFlag() != "" {

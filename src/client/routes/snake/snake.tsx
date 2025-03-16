@@ -1,14 +1,17 @@
 import { Link } from "react-router-dom";
 import BoardGame from "../../components/boardGame/boardGame";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import StartGameModal from "../../components/startGameModal/startGameModal";
 import Scoreboard from "../../components/scoreboard/scoreboard";
 import GlobalScoreUserInput from "../../components/globalScores/globalScoreUserInput";
+import { AppState } from "../../main";
+import { useSignal } from "@preact/signals-react";
 
 export default function Snake() {
-  //honestly better to refactor and just use useState
-  const [hasGameStarted, setHasGameStarted] = useState(false);
+  useSignal();
 
+  const [hasGameStarted, setHasGameStarted] = useState(false);
+  const { globalScores } = useContext(AppState);
   return (
     <div className="snake-game">
       <div className={`container`}>
@@ -18,7 +21,7 @@ export default function Snake() {
         ) : (
           <BoardGame setHasGameStarted={setHasGameStarted} />
         )}
-        <GlobalScoreUserInput />
+        {globalScores.sendScore.value && <GlobalScoreUserInput />}
       </div>
       <Link to={"/"}> Go Back to home page</Link>
       <div className="container">
